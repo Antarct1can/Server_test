@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<!-- Center align things and add margins -->
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  h1 {
+    text-align: center;
+  }
+
+  .container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+
+  .form {
+    max-width: 800px;
+    margin: auto;
+  }
+
+  .btn {
+    background: white;
+    border: 2px solid black; /* Black border for the buttons */
+    color: black;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+    margin-right: 5px; /* Add margin between buttons */
+  }
+
+  .btn:active,
+  .btn.active {
+    background-color: #ccc; /* Change background color when button is active */
+    border-color: gray; /* Change border color when button is active */
+  }
+
+  .arrow-btn {
+    width: 50px; /* Set a fixed width for the arrow buttons */
+    height: 50px; /* Set a fixed height for the arrow buttons */
+  }
+
+  .video {
+    max-width: 100%;
+    max-height: 100%;
+    display: block;
+  }
+
+  .right-corner {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+  }
+
+  .arrow-up {
+    position: absolute;
+    bottom: 150px;
+    right: 150px;
+  }
+
+  .arrow-right {
+    position: absolute;
+    bottom: 95px;
+    right: 95px;
+  }
+
+  .arrow-down {
+    position: absolute;
+    bottom: 95px;
+    right: 150px;
+  }
+
+  .arrow-left {
+    position: absolute;
+    bottom: 95px;
+    right: 205px;
+  }
+</style>
+
+<body>
+  <div class='container'>
+    <img src="https://www.linearity.io/blog/content/images/size/w1576/format/avif/2023/06/how-to-create-a-car-NewBlogCover.png"
+      class='video' alt="Placeholder Image">
+    <button type="button" class="btn btn-default right-corner" id="changeCameraBtn">Change Camera</button>
+    <button type="button" class="btn btn-default arrow-btn arrow-up" id="upBtn">↑</button>
+    <button type="button" class="btn btn-default arrow-btn arrow-left" id="leftBtn">←</button>
+    <button type="button" class="btn btn-default arrow-btn arrow-down" id="downBtn">↓</button>
+    <button type="button" class="btn btn-default arrow-btn arrow-right" id="rightBtn">→</button>
+  </div>
+
+  <script>
+    function setButtonActive(button) {
+      button.classList.add('active');
+    }
+
+    function setButtonInactive(button) {
+      button.classList.remove('active');
+    }
+
+    document.getElementById('upBtn').addEventListener('click', function () {
+      // Add functionality for the up button
+      console.log('Up button clicked');
+    });
+
+    document.getElementById('leftBtn').addEventListener('click', function () {
+      // Add functionality for the left button
+      console.log('Left button clicked');
+    });
+
+    document.getElementById('downBtn').addEventListener('click', function () {
+      // Add functionality for the down button
+      console.log('Down button clicked');
+    });
+
+    document.getElementById('rightBtn').addEventListener('click', function () {
+      // Add functionality for the right button
+      console.log('Right button clicked');
+    });
+
+    document.getElementById('changeCameraBtn').addEventListener('click', function () {
+      // Add functionality for the "Change Camera" button
+      console.log('Change Camera button clicked');
+    });
+
+    document.addEventListener('keydown', function (event) {
+      switch (event.key) {
+        case 'ArrowUp':
+          setButtonActive(document.getElementById('upBtn'));
+          // Add functionality for the up arrow key
+          console.log('Up arrow key pressed');
+          break;
+        case 'ArrowLeft':
+          setButtonActive(document.getElementById('leftBtn'));
+          // Add functionality for the left arrow key
+          console.log('Left arrow key pressed');
+          break;
+        case 'ArrowDown':
+          setButtonActive(document.getElementById('downBtn'));
+          // Add functionality for the down arrow key
+          console.log('Down arrow key pressed');
+          break;
+        case 'ArrowRight':
+          setButtonActive(document.getElementById('rightBtn'));
+          // Add functionality for the right arrow key
+          console.log('Right arrow key pressed');
+          break;
+        case 'c':
+        case 'C':
+          setButtonActive(document.getElementById('changeCameraBtn'));
+          // Add functionality for the 'C' key
+          console.log('C key pressed');
+          break;
+      }
+    });
+
+    document.addEventListener('keyup', function (event) {
+      switch (event.key) {
+        case 'ArrowUp':
+          setButtonInactive(document.getElementById('upBtn'));
+          break;
+        case 'ArrowLeft':
+          setButtonInactive(document.getElementById('leftBtn'));
+          break;
+        case 'ArrowDown':
+          setButtonInactive(document.getElementById('downBtn'));
+          break;
+        case 'ArrowRight':
+          setButtonInactive(document.getElementById('rightBtn'));
+          break;
+        case 'c':
+        case 'C':
+          setButtonInactive(document.getElementById('changeCameraBtn'));
+          break;
+      }
+    });
+  </script>
+</body>
+
+</html>
