@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 
-<!-- Center align things and add margins -->
 <style>
   body {
     margin: 0;
@@ -30,23 +29,23 @@
 
   .btn {
     background: white;
-    border: 2px solid black; /* Black border for the buttons */
+    border: 2px solid black;
     color: black;
     padding: 5px 10px;
     cursor: pointer;
     transition: background-color 0.3s, border-color 0.3s;
-    margin-right: 5px; /* Add margin between buttons */
+    margin-right: 5px;
   }
 
   .btn:active,
   .btn.active {
-    background-color: #ccc; /* Change background color when button is active */
-    border-color: gray; /* Change border color when button is active */
+    background-color: #ccc;
+    border-color: gray;
   }
 
   .arrow-btn {
-    width: 50px; /* Set a fixed width for the arrow buttons */
-    height: 50px; /* Set a fixed height for the arrow buttons */
+    width: 50px;
+    height: 50px;
   }
 
   .video {
@@ -63,14 +62,14 @@
 
   .arrow-up {
     position: absolute;
-    bottom: 150px;
+    bottom: 200px;
     right: 150px;
   }
 
   .arrow-right {
     position: absolute;
-    bottom: 95px;
-    right: 95px;
+    bottom: 147.5px;
+    right: 97.5px;
   }
 
   .arrow-down {
@@ -81,8 +80,16 @@
 
   .arrow-left {
     position: absolute;
-    bottom: 95px;
-    right: 205px;
+    bottom: 147.5px;
+    right: 202.5px;
+  }
+
+  .fire-btn {
+    position: absolute;
+    bottom: 147.5px;
+    right: 150px;
+    width: 50px;
+    height: 50px;
   }
 </style>
 
@@ -95,6 +102,7 @@
     <button type="button" class="btn btn-default arrow-btn arrow-left" id="leftBtn">←</button>
     <button type="button" class="btn btn-default arrow-btn arrow-down" id="downBtn">↓</button>
     <button type="button" class="btn btn-default arrow-btn arrow-right" id="rightBtn">→</button>
+    <button type="button" class="btn btn-default fire-btn" id="fireBtn">Fire</button>
   </div>
 
   <script>
@@ -107,57 +115,56 @@
     }
 
     document.getElementById('upBtn').addEventListener('click', function () {
-      // Add functionality for the up button
       console.log('Up button clicked');
     });
 
     document.getElementById('leftBtn').addEventListener('click', function () {
-      // Add functionality for the left button
       console.log('Left button clicked');
     });
 
     document.getElementById('downBtn').addEventListener('click', function () {
-      // Add functionality for the down button
       console.log('Down button clicked');
     });
 
     document.getElementById('rightBtn').addEventListener('click', function () {
-      // Add functionality for the right button
       console.log('Right button clicked');
     });
 
     document.getElementById('changeCameraBtn').addEventListener('click', function () {
-      // Add functionality for the "Change Camera" button
       console.log('Change Camera button clicked');
+    });
+
+    document.getElementById('fireBtn').addEventListener('click', function () {
+      console.log('Fire button clicked');
     });
 
     document.addEventListener('keydown', function (event) {
       switch (event.key) {
         case 'ArrowUp':
           setButtonActive(document.getElementById('upBtn'));
-          // Add functionality for the up arrow key
           console.log('Up arrow key pressed');
           break;
         case 'ArrowLeft':
           setButtonActive(document.getElementById('leftBtn'));
-          // Add functionality for the left arrow key
           console.log('Left arrow key pressed');
           break;
         case 'ArrowDown':
           setButtonActive(document.getElementById('downBtn'));
-          // Add functionality for the down arrow key
           console.log('Down arrow key pressed');
           break;
         case 'ArrowRight':
           setButtonActive(document.getElementById('rightBtn'));
-          // Add functionality for the right arrow key
           console.log('Right arrow key pressed');
           break;
         case 'c':
         case 'C':
           setButtonActive(document.getElementById('changeCameraBtn'));
-          // Add functionality for the 'C' key
           console.log('C key pressed');
+          break;
+        case 'f':
+        case 'F':
+          setButtonActive(document.getElementById('fireBtn'));
+          console.log('F key pressed');
           break;
       }
     });
@@ -179,6 +186,10 @@
         case 'c':
         case 'C':
           setButtonInactive(document.getElementById('changeCameraBtn'));
+          break;
+        case 'f':
+        case 'F':
+          setButtonInactive(document.getElementById('fireBtn'));
           break;
       }
     });
