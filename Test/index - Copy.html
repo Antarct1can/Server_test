@@ -1,97 +1,128 @@
 <!DOCTYPE html>
 <html>
 
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-  }
+<head>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    
+    h1 {
+      text-align: center;
+    }
+    
+    .container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+    }
+    
+    .form {
+      max-width: 800px;
+      margin: auto;
+    }
+    
+    .btn {
+      background: white;
+      border: 2px solid black;
+      color: black;
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: background-color 0.3s, border-color 0.3s;
+      margin-right: 5px;
+    }
+    
+    .btn.active {
+      background-color: #ccc;
+      border-color: gray;
+    }
+    
+    .arrow-btn {
+      width: 50px;
+      height: 50px;
+    }
+        
+    .video {
+      max-width: 100%;
+      max-height: 100%;
+      display: block;
+    }
+    
+    .right-corner {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    
+    .arrow-up {
+      position: absolute;
+      bottom: 200px;
+      right: 150px;
+    }
+    
+    .arrow-right {
+      position: absolute;
+      bottom: 147.5px;
+      right: 97.5px;
+    }
+    
+    .arrow-down {
+      position: absolute;
+      bottom: 95px;
+      right: 150px;
+    }
+    
+    .arrow-left {
+      position: absolute;
+      bottom: 147.5px;
+      right: 202.5px;
+    }
+    
+    .fire-btn {
+      position: absolute;
+      bottom: 147.5px;
+      right: 150px;
+      width: 50px;
+      height: 50px;
+    }
 
-  h1 {
-    text-align: center;
-  }
+    .wBtn {
+      position: absolute;
+      bottom: 200px;
+      left: 150px;
+      width: 50px;
+      height: 50px;
+    }
+    .dBtn {
+      position: absolute;
+      bottom: 147.5px;
+      left: 202.5px;
+      width: 50px;
+      height: 50px;
+    }
+    .sBtn {
+      position: absolute;
+      bottom: 95px;
+      left: 150px;
+      width: 50px;
+      height: 50px;
+    }
+    .aBtn {
+      position: absolute;
+      bottom: 147.5px;
+      left: 97.5px;
+      width: 50px;
+      height: 50px;
+    }
 
-  .container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-  }
-
-  .form {
-    max-width: 800px;
-    margin: auto;
-  }
-
-  .btn {
-    background: white;
-    border: 2px solid black;
-    color: black;
-    padding: 5px 10px;
-    cursor: pointer;
-    transition: background-color 0.3s, border-color 0.3s;
-    margin-right: 5px;
-  }
-
-  .btn:active,
-  .btn.active {
-    background-color: #ccc;
-    border-color: gray;
-  }
-
-  .arrow-btn {
-    width: 50px;
-    height: 50px;
-  }
-
-  .video {
-    max-width: 100%;
-    max-height: 100%;
-    display: block;
-  }
-
-  .right-corner {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-
-  .arrow-up {
-    position: absolute;
-    bottom: 200px;
-    right: 150px;
-  }
-
-  .arrow-right {
-    position: absolute;
-    bottom: 147.5px;
-    right: 97.5px;
-  }
-
-  .arrow-down {
-    position: absolute;
-    bottom: 95px;
-    right: 150px;
-  }
-
-  .arrow-left {
-    position: absolute;
-    bottom: 147.5px;
-    right: 202.5px;
-  }
-
-  .fire-btn {
-    position: absolute;
-    bottom: 147.5px;
-    right: 150px;
-    width: 50px;
-    height: 50px;
-  }
-</style>
+  </style>
+</head>
 
 <body>
   <div class='container'>
@@ -103,95 +134,36 @@
     <button type="button" class="btn btn-default arrow-btn arrow-down" id="downBtn">↓</button>
     <button type="button" class="btn btn-default arrow-btn arrow-right" id="rightBtn">→</button>
     <button type="button" class="btn btn-default fire-btn" id="fireBtn">Fire</button>
+
+    <button type="button" class="btn btn-default wbtn" id="wBtn">W</button>
+    <button type="button" class="btn btn-default abtn" id="aBtn">A</button>
+    <button type="button" class="btn btn-default sbtn" id="sBtn">S</button>
+    <button type="button" class="btn btn-default dbtn" id="dBtn">D</button>
+
   </div>
 
   <script>
-    function setButtonActive(button) {
-      button.classList.add('active');
-    }
+    const buttons = document.querySelectorAll('.btn');
 
-    function setButtonInactive(button) {
-      button.classList.remove('active');
-    }
-
-    document.getElementById('upBtn').addEventListener('click', function () {
-      console.log('Up button clicked');
-    });
-
-    document.getElementById('leftBtn').addEventListener('click', function () {
-      console.log('Left button clicked');
-    });
-
-    document.getElementById('downBtn').addEventListener('click', function () {
-      console.log('Down button clicked');
-    });
-
-    document.getElementById('rightBtn').addEventListener('click', function () {
-      console.log('Right button clicked');
-    });
-
-    document.getElementById('changeCameraBtn').addEventListener('click', function () {
-      console.log('Change Camera button clicked');
-    });
-
-    document.getElementById('fireBtn').addEventListener('click', function () {
-      console.log('Fire button clicked');
-    });
-
-    document.addEventListener('keydown', function (event) {
-      switch (event.key) {
-        case 'ArrowUp':
-          setButtonActive(document.getElementById('upBtn'));
-          console.log('Up arrow key pressed');
-          break;
-        case 'ArrowLeft':
-          setButtonActive(document.getElementById('leftBtn'));
-          console.log('Left arrow key pressed');
-          break;
-        case 'ArrowDown':
-          setButtonActive(document.getElementById('downBtn'));
-          console.log('Down arrow key pressed');
-          break;
-        case 'ArrowRight':
-          setButtonActive(document.getElementById('rightBtn'));
-          console.log('Right arrow key pressed');
-          break;
-        case 'c':
-        case 'C':
-          setButtonActive(document.getElementById('changeCameraBtn'));
-          console.log('C key pressed');
-          break;
-        case 'f':
-        case 'F':
-          setButtonActive(document.getElementById('fireBtn'));
-          console.log('F key pressed');
-          break;
-      }
-    });
-
-    document.addEventListener('keyup', function (event) {
-      switch (event.key) {
-        case 'ArrowUp':
-          setButtonInactive(document.getElementById('upBtn'));
-          break;
-        case 'ArrowLeft':
-          setButtonInactive(document.getElementById('leftBtn'));
-          break;
-        case 'ArrowDown':
-          setButtonInactive(document.getElementById('downBtn'));
-          break;
-        case 'ArrowRight':
-          setButtonInactive(document.getElementById('rightBtn'));
-          break;
-        case 'c':
-        case 'C':
-          setButtonInactive(document.getElementById('changeCameraBtn'));
-          break;
-        case 'f':
-        case 'F':
-          setButtonInactive(document.getElementById('fireBtn'));
-          break;
-      }
+    document.addEventListener('keydown', function(event) {
+      const key = event.key.toLowerCase();
+      
+      buttons.forEach(btn => {
+        btn.classList.remove('active');
+        if (key === 'ArrowUp' && btn.id === 'upBtn') {
+          btn.classList.add('active');
+        } else if (key === 'ArrowLeft' && btn.id === 'leftBtn') {
+          btn.classList.add('active');
+        } else if (key === 'ArrowDown' && btn.id === 'downBtn') {
+          btn.classList.add('active');
+        } else if (key === 'ArrowRight' && btn.id === 'rightBtn') {
+          btn.classList.add('active');
+        } else if (key === 'c' && btn.id === 'changeCameraBtn') {
+          btn.classList.add('active');
+        } else if (key === 'f' && btn.id === 'fireBtn') {
+          btn.classList.add('active');
+        }
+      });
     });
   </script>
 </body>

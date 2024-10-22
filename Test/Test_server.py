@@ -18,6 +18,10 @@ lock = threading.Lock()
 # initialize a flask object
 app = Flask(__name__)
 
+@app.route("/")
+def index():
+    return render_template("index.html")  # Assuming your HTML file is named index.html
+
 @app.route("/video_feed")
 def video_feed():
 	# return the response generated along with the specific media
@@ -52,6 +56,28 @@ def start_server(output_folder:str = '/home/pi/pithermalcam/saved_snapshots/'):
 	app.run(host=ip, port=port, debug=False,threaded=True, use_reloader=False)
 
 
+# Modify the generate() function to provide camera feed frames
+def generate():
+    global outputFrame, lock
+    while True:
+        with lock:
+            if outputFrame is not None:
+                # Encode the frame in JPEG format
+                (flag, encodedImage) = cv2.imencode(".jpg", outputFrame)
+
+                # Ensure the frame was successfully encoded
+                if not flag:
+                    continue
+
+                # Yield the output frame in the byte format
+                yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + 
+                       bytearray(encodedImage) + b'\r\n')
+
+# Update the video_feed route to return the camera feed frames
+@app.route("/video_feed")
+def video_feed():
+    return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
+
 # If this is the main thread, simply start the server
 if __name__ == '__main__':
-	start_server()
+    start_server()
