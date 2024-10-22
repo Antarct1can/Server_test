@@ -7,6 +7,7 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
+      background-color: rgba(0, 0, 0, 0.548);
     }
     
     h1 {
@@ -121,12 +122,37 @@
       height: 50px;
     }
 
+    #color-change-button {
+      padding: 0;
+      width: 50px;
+      height: 50px;
+      font-size: 16px;
+      background-color: red;
+      color: white;
+      cursor: pointer;
+      position: fixed;
+      bottom: 147.5px;
+      left: 150px;
+    }
+
+    /* CSS to position the distance value in the upper left corner */
+    #distance-display {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background-color: #333;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
   </style>
 </head>
 
 <body>
   <div class='container'>
-    <img src="https://www.linearity.io/blog/content/images/size/w1576/format/avif/2023/06/how-to-create-a-car-NewBlogCover.png"
+    <img src="file:E:\Important files\UOS study files\SDP\SDP2\Server\Server_test\Test\image.png"
       class='video' alt="Placeholder Image">
     <button type="button" class="btn btn-default right-corner" id="changeCameraBtn">Change Camera</button>
     <button type="button" class="btn btn-default arrow-btn arrow-up" id="upBtn">↑</button>
@@ -135,12 +161,17 @@
     <button type="button" class="btn btn-default arrow-btn arrow-right" id="rightBtn">→</button>
     <button type="button" class="btn btn-default fire-btn" id="fireBtn">Fire</button>
 
-    <button type="button" class="btn btn-default wbtn" id="wBtn">W</button>
-    <button type="button" class="btn btn-default abtn" id="aBtn">A</button>
-    <button type="button" class="btn btn-default sbtn" id="sBtn">S</button>
-    <button type="button" class="btn btn-default dbtn" id="dBtn">D</button>
+    <button type="button" class="btn btn-default wBtn" id="wBtn">W</button>
+    <button type="button" class="btn btn-default aBtn" id="aBtn">A</button>
+    <button type="button" class="btn btn-default sBtn" id="sBtn">S</button>
+    <button type="button" class="btn btn-default dBtn" id="dBtn">D</button>
+
+
+    <button id="color-change-button" onclick="toggleColor()">Brake</button>
 
   </div>
+
+  <div id="distance-display">Distance: <span id="distance-value">--</span> mm</div>
 
   <script>
     const buttons = document.querySelectorAll('.btn');
@@ -165,6 +196,40 @@
         }
       });
     });
+
+
+
+    // Simulating the function that gets the distance value from the sensor
+    function getDistanceValue() {
+      // Replace this with your actual function to get the distance value
+      return Math.floor(Math.random() * 100); // Random distance value for demonstration
+    }
+
+    // Update the distance value on the webpage
+    function updateDistanceValue() {
+      const distanceValueElement = document.getElementById('distance-value');
+      const distance = getDistanceValue(); // Get the distance value
+      distanceValueElement.textContent = distance; // Update the displayed value
+    }
+
+    // Update the distance value periodically (every second in this example)
+    setInterval(updateDistanceValue, 1000); // Update every 1000 milliseconds (1 second)
+
+
+
+    let isGreen = false;
+
+    function toggleColor() {
+      const button = document.getElementById('color-change-button');
+
+      if (isGreen) {
+        button.style.backgroundColor = 'red';
+      } else {
+        button.style.backgroundColor = 'green';
+      }
+
+      isGreen = !isGreen;
+    }
   </script>
 </body>
 
