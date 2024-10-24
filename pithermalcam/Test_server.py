@@ -1,4 +1,4 @@
-from pithermalcam import pithermalcam
+from pi_therm_cam import pithermalcam
 import cv2
 from flask import Response, request
 from flask import Flask
