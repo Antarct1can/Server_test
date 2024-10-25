@@ -122,6 +122,25 @@
       height: 50px;
     }
 
+    /* .brakeBtn {
+      padding: 10px 20px;
+      background-color: green;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 50px;
+      height: 50px;
+      font-size: 16px;
+      position: fixed;
+      bottom: 147.5px;
+      left: 150px;
+    }
+
+    .brakeBtn.red {
+      background-color: red;
+    } */
+    
     #color-change-button {
       padding: 0;
       width: 50px;
@@ -165,7 +184,7 @@
     <button type="button" class="btn btn-default sBtn" id="sBtn">S</button>
     <button type="button" class="btn btn-default dBtn" id="dBtn">D</button>
 
-
+    <!-- <button id="brakeBtn" class="button">Brake</button> -->
     <button id="color-change-button" onclick="toggleColor()">Brake</button>
 
   </div>
@@ -176,28 +195,194 @@
   
   <script>
     const buttons = document.querySelectorAll('.btn');
+    // const button = document.getElementById('brakeBtn');
 
-    document.addEventListener('keydown', function(event) {
-      const key = event.key.toLowerCase();
-      
-      buttons.forEach(btn => {
-        btn.classList.remove('active');
-        if (key === 'ArrowUp' && btn.id === 'upBtn') {
-          btn.classList.add('active');
-        } else if (key === 'ArrowLeft' && btn.id === 'leftBtn') {
-          btn.classList.add('active');
-        } else if (key === 'ArrowDown' && btn.id === 'downBtn') {
-          btn.classList.add('active');
-        } else if (key === 'ArrowRight' && btn.id === 'rightBtn') {
-          btn.classList.add('active');
-        } else if (key === 'c' && btn.id === 'changeCameraBtn') {
-          btn.classList.add('active');
-        } else if (key === 'f' && btn.id === 'fireBtn') {
-          btn.classList.add('active');
-        }
-      });
+    function setButtonActive(button) {
+      button.classList.add('active');
+    }
+
+    function setButtonInactive(button) {
+      button.classList.remove('active');
+    }
+
+    document.getElementById('upBtn').addEventListener('click', function () {
+      // Add functionality for the up button
+      console.log('Up button clicked');
     });
 
+    document.getElementById('leftBtn').addEventListener('click', function () {
+      // Add functionality for the left button
+      console.log('Left button clicked');
+    });
+
+    document.getElementById('downBtn').addEventListener('click', function () {
+      // Add functionality for the down button
+      console.log('Down button clicked');
+    });
+
+    document.getElementById('rightBtn').addEventListener('click', function () {
+      // Add functionality for the right button
+      console.log('Right button clicked');
+    });
+
+    document.getElementById('changeCameraBtn').addEventListener('click', function () {
+      // Add functionality for the "Change Camera" button
+      console.log('Change Camera button clicked');
+    });
+
+    document.getElementById('fireBtn').addEventListener('click', function () {
+      // Add functionality for the "Fire" button
+      console.log('Fire button clicked');
+    });
+
+    document.getElementById('wBtn').addEventListener('click', function () {
+      // Add functionality for the "Fire" button
+      console.log('W button clicked');
+    });
+
+    document.getElementById('aBtn').addEventListener('click', function () {
+      // Add functionality for the "Fire" button
+      console.log('A button clicked');
+    });
+
+    document.getElementById('sBtn').addEventListener('click', function () {
+      // Add functionality for the "Fire" button
+      console.log('S button clicked');
+    });
+
+    document.getElementById('dBtn').addEventListener('click', function () {
+      // Add functionality for the "Fire" button
+      console.log('D button clicked');
+    });
+    
+    document.getElementById('color-change-button').addEventListener('click', function () {
+      // Add functionality for the "Fire" button
+      console.log('brake button clicked');
+    });
+
+    // button.addEventListener('click', toggleColor);
+    // document.addEventListener('keydown', function(event) {
+    //   if (event.key === 'b' || event.key === 'B') {
+    //     toggleColor();
+    //   }
+    // });
+
+    // function toggleColor() {
+    //   button.classList.toggle('red');
+    // }
+
+    document.addEventListener('keydown', function (event) {
+      switch (event.key) {
+        case 'ArrowUp':
+          setButtonActive(document.getElementById('upBtn'));
+          // Add functionality for the up arrow key
+          console.log('Up arrow key pressed');
+          break;
+        case 'ArrowLeft':
+          setButtonActive(document.getElementById('leftBtn'));
+          // Add functionality for the left arrow key
+          console.log('Left arrow key pressed');
+          break;
+        case 'ArrowDown':
+          setButtonActive(document.getElementById('downBtn'));
+          // Add functionality for the down arrow key
+          console.log('Down arrow key pressed');
+          break;
+        case 'ArrowRight':
+          setButtonActive(document.getElementById('rightBtn'));
+          // Add functionality for the right arrow key
+          console.log('Right arrow key pressed');
+          break;
+        case 'c':
+        case 'C':
+          setButtonActive(document.getElementById('changeCameraBtn'));
+          // Add functionality for the 'C' key
+          console.log('C key pressed');
+          break;
+        case 'f':
+        case 'F':
+          setButtonActive(document.getElementById('fireBtn'));
+          // Add functionality for the 'F' key
+          console.log('F key pressed');
+          break;
+        case 'w':
+        case 'W':
+          setButtonActive(document.getElementById('wBtn'));
+          // Add functionality for the 'F' key
+          console.log('W key pressed');
+          break;
+        case 'a':
+        case 'A':
+          setButtonActive(document.getElementById('aBtn'));
+          // Add functionality for the 'F' key
+          console.log('A key pressed');
+          break;
+        case 's':
+        case 'S':
+          setButtonActive(document.getElementById('sBtn'));
+          // Add functionality for the 'F' key
+          console.log('S key pressed');
+          break;
+        case 'd':
+        case 'D':
+          setButtonActive(document.getElementById('dBtn'));
+          // Add functionality for the 'F' key
+          console.log('D key pressed');
+          break;
+        case 'b':
+        case 'B':
+          setButtonActive(document.getElementById('color-change-button'));
+          // Add functionality for the 'F' key
+          console.log('brake key pressed');
+          toggleColor();
+          break;
+      }
+    });
+
+    document.addEventListener('keyup', function (event) {
+      switch (event.key) {
+        case 'ArrowUp':
+          setButtonInactive(document.getElementById('upBtn'));
+          break;
+        case 'ArrowLeft':
+          setButtonInactive(document.getElementById('leftBtn'));
+          break;
+        case 'ArrowDown':
+          setButtonInactive(document.getElementById('downBtn'));
+          break;
+        case 'ArrowRight':
+          setButtonInactive(document.getElementById('rightBtn'));
+          break;
+        case 'c':
+        case 'C':
+          setButtonInactive(document.getElementById('changeCameraBtn'));
+          break;
+        case 'f':
+        case 'F':
+          setButtonInactive(document.getElementById('fireBtn'));
+          break;
+        case 'w':
+        case 'W':
+          setButtonInactive(document.getElementById('wBtn'));
+          break;
+        case 'a':
+        case 'A':
+          setButtonInactive(document.getElementById('aBtn'));
+          break;
+        case 's':
+        case 'S':
+          setButtonInactive(document.getElementById('sBtn'));
+          break;
+        case 'd':
+        case 'D':
+          setButtonInactive(document.getElementById('dBtn'));
+          break;
+        case 'b':
+        case 'B':
+          setButtonInactive(document.getElementById('color-change-button'));
+          break;
+      }
+    });
 
 
     // Simulating the function that gets the distance value from the sensor
