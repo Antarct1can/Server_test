@@ -225,9 +225,21 @@
       console.log('Right button clicked');
     });
 
-    document.getElementById('changeCameraBtn').addEventListener('click', function () {
+    document.getElementById('changeCameraBtn').addEventListener('click', async function () {
       // Add functionality for the "Change Camera" button
       console.log('Change Camera button clicked');
+      const url = "/changeCameraBtn";
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+
+        const json = await response.json();
+        console.log(json);
+      } catch (error) {
+        console.error(error.message);
+      }
     });
 
     document.getElementById('fireBtn').addEventListener('click', function () {
@@ -271,7 +283,7 @@
     //   button.classList.toggle('red');
     // }
 
-    document.addEventListener('keydown', function (event) {
+    document.addEventListener('keydown', async function (event) {
       switch (event.key) {
         case 'ArrowUp':
           setButtonActive(document.getElementById('upBtn'));
@@ -298,6 +310,18 @@
           setButtonActive(document.getElementById('changeCameraBtn'));
           // Add functionality for the 'C' key
           console.log('C key pressed');
+          const url = "/changeCameraBtn";
+          try {
+            const response = await fetch(url);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
           break;
         case 'f':
         case 'F':
@@ -418,7 +442,7 @@
     }
   </script>
 
-  <script type=text/javascript>
+  <!-- <script type=text/javascript>
     $(function() {
       $('a#changeCameraBtn').on('click', function(e) {
         e.preventDefault()
@@ -429,7 +453,7 @@
         return false;
       });
     });
-  </script>
+  </script> -->
 </body>
 
 </html>

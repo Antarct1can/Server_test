@@ -39,6 +39,7 @@ def switch_camera():
     thermal_camera = 1
     imx708_camera = 2
     usb_camera = 3
+    
     current_camera = thermal_camera
     if current_camera == 1:
         current_camera = 2
@@ -80,17 +81,16 @@ def pull_images():
 
     while True:
         if current_camera == thermal_camera:
-            while thermcam is not None:
-                current_frame=None
-                try:
-                    current_frame = thermcam.update_image_frame()
-                except Exception:
-                    print("Too many retries error caught; continuing...")
+            current_frame=None
+            try:
+                current_frame = thermcam.update_image_frame()
+            except Exception:
+                print("Too many retries error caught; continuing...")
 
-				# If we have a frame, acquire the lock, set the output frame, and release the lock
-                if current_frame is not None:
-                    with lock:
-                        outputFrame = current_frame.copy()
+			# If we have a frame, acquire the lock, set the output frame, and release the lock
+            if current_frame is not None:
+                with lock:
+                    outputFrame = current_frame.copy()
         elif current_camera == imx708_camera:
             ret, frame = imx708_camera.read()
             # processed_frame = process_imx708_frame(frame)
