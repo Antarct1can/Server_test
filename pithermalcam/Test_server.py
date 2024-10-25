@@ -33,7 +33,7 @@ def index():
 # 	# type (mime type)
 # 	return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
-@app.route('/change_camera')
+@app.route('/changeCameraBtn')
 def switch_camera():
     global thermal_camera, imx708_camera, usb_camera, current_camera
     thermal_camera = 1
