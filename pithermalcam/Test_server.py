@@ -76,7 +76,7 @@ def start_server(output_folder:str = '/home/pi/pithermalcam/saved_snapshots/'):
 	app.run(host=ip, port=port, debug=False,threaded=True, use_reloader=False)
 
 def pull_images():
-    global outputFrame, thermcam
+    global outputFrame, thermcam, current_camera
 
     while True:
         if current_camera == thermal_camera:
