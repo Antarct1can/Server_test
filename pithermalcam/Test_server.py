@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 # initialize the output frame and a lock used to ensure thread-safe exchanges of the output frames (useful when multiple browsers/tabs are viewing the stream)
 outputFrame = None
 thermcam = None
+current_camera = 1
 lock = threading.Lock()
 
 # initialize a flask object
@@ -26,11 +27,11 @@ app = Flask(__name__)
 def index():
     return render_template("index - Copy.html")  # Assuming your HTML file is named index.html
 
-@app.route("/video_feed")
-def video_feed():
-	# return the response generated along with the specific media
-	# type (mime type)
-	return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
+# @app.route("/video_feed")
+# def video_feed():
+# 	# return the response generated along with the specific media
+# 	# type (mime type)
+# 	return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 @app.route('/change_camera')
 def switch_camera():
