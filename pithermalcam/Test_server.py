@@ -1,5 +1,7 @@
 from pi_therm_cam import pithermalcam
 import cv2
+# import io
+# import picamera
 from flask import Response, request
 from flask import Flask
 from flask import render_template
@@ -92,8 +94,19 @@ def pull_images():
                 with lock:
                     outputFrame = current_frame.copy()
         elif current_camera == imx708_camera:
-            ret, frame = imx708_camera.read()
-            # processed_frame = process_imx708_frame(frame)
+            # with picamera.PiCamera() as camera:
+            #     camera.resolution = (640, 480)
+            #     camera.framerate = 24
+            #     stream = io.BytesIO()
+        
+            #     for _ in camera.capture_continous(stream, 'jpeg', use_video_port=True):
+            #         stream.seek(0)
+            #         yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + stream.read() + b'\r\n'
+            #         stream.seek(0)
+            #         stream.truncate()
+
+            # ret, frame = imx708_camera.read()
+            # # processed_frame = process_imx708_frame(frame)
         elif current_camera == usb_camera:
             ret, frame = usb_camera.read()
             # processed_frame = process_usb_frame(frame)
