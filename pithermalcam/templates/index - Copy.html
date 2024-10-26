@@ -415,20 +415,20 @@
       try {
         const response = await fetch(url);
         if (!response.ok) {
-          throw new Error(`Response status: ${response.status}`);
-        }
-        
-        const json = await response.json();
-        console.log(json);
+        throw new Error(`Response status: ${response.status}`);
+      }
+    
+      const dist_cm = await response.json(); // Ensure you parse the response correctly
+      return dist_cm; // Return the distance value
       } catch (error) {
-        console.error(error.message);
+      console.error(error.message);
       }
     }
 
     // Update the distance value on the webpage
-    function updateDistanceValue() {
+    async function updateDistanceValue() {
       const distanceValueElement = document.getElementById('distance-value');
-      const distance = getDistanceValue(); // Get the distance value
+      const distance = await getDistanceValue(); // Wait for the distance value
       distanceValueElement.textContent = distance; // Update the displayed value
     }
 
