@@ -32,6 +32,9 @@ logger = logging.getLogger(__name__)
 outputFrame = None
 thermcam = None
 current_camera = 1
+thermal_camera = 1
+imx708_camera = 2
+usb_camera = 3
 lock = threading.Lock()
 
 # initialize a flask object
