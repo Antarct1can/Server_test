@@ -2,13 +2,25 @@ from pi_therm_cam import pithermalcam
 import cv2
 # import io
 # import picamera
+import RPi.GPIO as GPIO
+import time
 from flask import Response, request
 from flask import Flask
 from flask import render_template
 import threading
 import time, socket, logging, traceback
 
+# board numbering system to use
+GPIO.setmode(GPIO.BOARD)
 
+# variable to hold a short delay time
+delayTime = 0.2
+
+# setup trigger and echo pins
+trigPin = 23
+echoPin = 24
+GPIO.setup(trigPin, GPIO.OUT)
+GPIO.setup(echoPin, GPIO.IN)
 
 # Set up Logger
 logging.basicConfig(filename='pithermcam.log',filemode='a',
@@ -50,6 +62,45 @@ def switch_camera():
     elif current_camera == 3:
         current_camera = 1
     return "Camera switched."
+
+@app.route('/distance-value')
+def distance_value():
+    # start the pulse to get the sensor to send the ping
+        # set trigger pin low for 2 micro seconds
+        GPIO.output(trigPin, 0)
+        time.sleep(2E-6)
+        # set trigger pin high for 10 micro seconds
+        GPIO.output(trigPin, 1)
+        time.sleep(10E-6)
+        # go back to zero - communication compete to send ping
+        GPIO.output(trigPin, 0)
+        # now need to wait till echo pin goes high to start the timer
+        # this means the ping has been sent
+        while GPIO.input(echoPin) == 0:
+            pass
+        # start the time - use system time
+        echoStartTime = time.time()
+        # wait for echo pin to go down to zero
+        while GPIO.input(echoPin) == 1:
+            pass
+        echoStopTime = time.time()
+        # calculate ping travel time
+        pingTravelTime = echoStopTime - echoStartTime
+        # Use the time to calculate the distance to the target.
+        # speed of sound at 72 deg F is 344.44 m/s
+        # from weather.gov/epz/wxcalc_speedofsound.
+        # equations used by calculator at website above.
+        # speed of sound = 643.855*((temp_in_kelvin/273.15)^0.5)
+        # temp_in_kelvin = ((5/9)*(temp_in_F - 273.15)) + 32
+        #
+        # divide in half since the time of travel is out and back
+        dist_cm = (pingTravelTime*34444)/2
+        # dist_inch = dist_cm * 0.3937008 # 1 cm = 0.3937008 inches
+        print('Distance = ','inches |', round(dist_cm, 1),
+              'cm')
+        # sleep to slow things down
+        time.sleep(delayTime)
+        return dist_cm
 
 def get_ip_address():
 	"""Find the current IP address of the device"""
@@ -105,8 +156,8 @@ def pull_images():
             #         stream.seek(0)
             #         stream.truncate()
 
-            # ret, frame = imx708_camera.read()
-            # # processed_frame = process_imx708_frame(frame)
+            ret, frame = imx708_camera.read()
+            # processed_frame = process_imx708_frame(frame)
         elif current_camera == usb_camera:
             ret, frame = usb_camera.read()
             # processed_frame = process_usb_frame(frame)

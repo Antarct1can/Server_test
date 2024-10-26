@@ -189,7 +189,7 @@
 
   </div>
 
-  <div id="distance-display">Distance: <span id="distance-value">--</span> mm</div>
+  <div id="distance-display">Distance: <span id="distance-value">--</span> cm</div>
 
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   
@@ -410,9 +410,19 @@
 
 
     // Simulating the function that gets the distance value from the sensor
-    function getDistanceValue() {
-      // Replace this with your actual function to get the distance value
-      return Math.floor(Math.random() * 100); // Random distance value for demonstration
+    async function getDistanceValue() {
+      const url = "/distance-value";
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+        }
+        
+        const json = await response.json();
+        console.log(json);
+      } catch (error) {
+        console.error(error.message);
+      }
     }
 
     // Update the distance value on the webpage
