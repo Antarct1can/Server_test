@@ -122,25 +122,6 @@
       height: 50px;
     }
     
-    /* .brakeBtn {
-      padding: 10px 20px;
-      background-color: green;
-      color: white;
-      border: none;
-      cursor: pointer;
-      border-radius: 5px;
-      width: 50px;
-      height: 50px;
-      font-size: 16px;
-      position: fixed;
-      bottom: 147.5px;
-      left: 150px;
-    }
-
-    .brakeBtn.red {
-      background-color: red;
-    } */
-    
     #color-change-button {
       padding: 0;
       width: 50px;
@@ -231,15 +212,19 @@
       // Add functionality for the "Change Camera" button
       console.log('Change Camera button clicked');
       const url = "/changeCameraBtn";
-      try {
+      try 
+      {
         const response = await fetch(url);
-        if (!response.ok) {
+        if (!response.ok) 
+        {
           throw new Error(`Response status: ${response.status}`);
         }
 
         const json = await response.json();
         console.log(json);
-      } catch (error) {
+      } 
+      catch (error) 
+      {
         console.error(error.message);
       }
     });
@@ -273,17 +258,6 @@
       // Add functionality for the "Fire" button
       console.log('brake button clicked');
     });
-
-    // button.addEventListener('click', toggleColor);
-    // document.addEventListener('keydown', function(event) {
-    //   if (event.key === 'b' || event.key === 'B') {
-    //     toggleColor();
-    //   }
-    // });
-
-    // function toggleColor() {
-    //   button.classList.toggle('red');
-    // }
     
         document.addEventListener('keydown', async function (event) {
       switch (event.key) {
@@ -313,15 +287,19 @@
           // Add functionality for the 'C' key
           console.log('C key pressed');
           const url = "/changeCameraBtn";
-          try {
+          try 
+          {
             const response = await fetch(url);
-            if (!response.ok) {
+            if (!response.ok) 
+            {
               throw new Error(`Response status: ${response.status}`);
             }
 
             const json = await response.json();
             console.log(json);
-          } catch (error) {
+          } 
+          catch (error) 
+          {
             console.error(error.message);
           }
           break;
@@ -411,50 +389,28 @@
     });
 
 
-      async function getDistanceValue() {
-      const url = "/dist_value";
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`);
-        
-      }
-      const distanceValueElement = document.getElementById('distance-value');
-      const dist_cm = await response.json(); // Ensure you parse the response correctly
-      distanceValueElement.textContent = dist_cm; // Update the displayed value
+      async function getDistanceValue()
+      {
+        const url = "/dist_value";
+          try 
+          {
+            const response = await fetch(url);
+            if (!response.ok) 
+            {
+              throw new Error(`Response status: ${response.status}`);
+            }
+        const distanceValueElement = document.getElementById('distance-value');
+        const dist_cm = await response.json(); // Ensure you parse the response correctly
+        distanceValueElement.textContent = dist_cm; // Update the displayed value
 
-      console.log(dist_cm);
-      } catch (error) {
-      console.error(error.message);
-      }
-      }
-        getDistanceValue();
-
-    // Simulating the function that gets the distance value from the sensor
-    // async function getDistanceValue() {
-    //   const url = "/distance-value";
-    //   try {
-    //     const response = await fetch(url);
-    //     if (!response.ok) {
-    //     throw new Error(`Response status: ${response.status}`);
-    //   }
-    
-    //   const dist_cm = await response.json(); // Ensure you parse the response correctly
-    //   return dist_cm; // Return the distance value
-    //   } catch (error) {
-    //   console.error(error.message);
-    //   }
-    // }
-
-    // // Update the distance value on the webpage
-    // async function updateDistanceValue() {
-    //   const distanceValueElement = document.getElementById('distance-value');
-    //   const distance = await getDistanceValue(); // Wait for the distance value
-    //   distanceValueElement.textContent = distance; // Update the displayed value
-    // }
-
-    // Update the distance value periodically (every second in this example)
-    //setInterval(updateDistanceValue, 1000); // Update every 1000 milliseconds (1 second)
+        console.log(dist_cm);
+        } 
+          catch (error) 
+          {
+            console.error(error.message);
+          }
+        }
+      getDistanceValue();
 
     let isGreen = false;
 
@@ -470,19 +426,6 @@
       isGreen = !isGreen;
     }
   </script>
-
-  <!-- <script type=text/javascript>
-    $(function() {
-      $('a#changeCameraBtn').on('click', function(e) {
-        e.preventDefault()
-        $.getJSON('/change_camera',
-            function(data) {
-          //do nothing
-        });
-        return false;
-      });
-    });
-  </script> -->
 </body>
 
 </html>

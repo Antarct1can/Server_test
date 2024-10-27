@@ -38,7 +38,10 @@ imx708_camera = 2
 usb_camera = 3
 dist_cm = 0
 lock = threading.Lock()
-
+with Picamera2() as camera:
+    camera.start()
+    camera.resolution = (640, 480)
+    camera.framerate = 24
 # initialize a flask object
 app = Flask(__name__)
 
@@ -134,7 +137,7 @@ def start_server(output_folder:str = '/home/pi/pithermalcam/saved_snapshots/'):
         app.run(host=ip, port=port, debug=False,threaded=True, use_reloader=False)
 
 def pull_images():
-    global outputFrame, thermcam, current_camera, capture_file
+    global outputFrame, thermcam, current_camera, stream
 
     while True:
         print (current_camera)
@@ -156,36 +159,12 @@ def pull_images():
     
              #    for _ in camera.capture_sequence([io.BytesIO()], format='jpeg'):
              #         outputframe = _.data
-             with Picamera2() as camera:
-                camera.start()
-                camera.resolution = (640, 480)
-                camera.framerate = 24
-                stream = io.BytesIO()
-                if current_frame is not None:
-                    with lock:
-                        outputFrame = capture(stream, format='jpeg')
-                #for _ in camera.capture_file(stream):
-                #    stream.seek(0)
-                #    outputFrame = stream.read()
-                #    stream.seek(0)
-                #    stream.truncate()
-                    
-               # for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
-               #     stream.seek(0)
-               #     outputframe = stream.read()
-                #    stream.seek(0)
-                #    stream.truncate()
-                
-             ##with picamera2.Picamera2() as camera:
-              #  camera.resolution = (640, 480)
-              #  camera.framerate = 24
-             #   stream = io.BytesIO()
+            
+            stream = io.BytesIO()
 
-              #  for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
-              #      stream.seek(0)
-               #     outputframe = stream.read()
-              #      stream.seek(0)
-               #     stream.truncate()
+            if current_frame is not None:
+                with lock:
+                    outputFrame = camera.capture_file(stream, format='jpeg')
                
             #ret, frame = imx708_camera.read()
             # processed_frame = process_imx708_frame(frame)
@@ -237,7 +216,7 @@ def video_feed():
 
 @app.route("/dist_value")
 def dist_value():
-    distance_value()
+    #distance_value()
     time.sleep(delayTime)
     return Response(generate_distance() , mimetype="text/plain")
 
