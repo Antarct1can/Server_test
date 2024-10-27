@@ -1,0 +1,6 @@
+https://picamera.readthedocs.io/en/release-1.13/
+https://datasheets.raspberrypi.com/camera/picamera2-manual.pdf
+https://www.raspberrypi.com/documentation/computers/camera_software.html
+https://www.raspberrypi.com/documentation/computers/camera_software.html
+https://github.com/raspberrypi/picamera2/tree/055032e95b1c9f2312565dc88ab5bf06a1a68550/examples
+https://www.simplilearn.com/tutorials/python-tutorial/yield-in-python
