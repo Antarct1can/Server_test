@@ -1,7 +1,8 @@
 from pi_therm_cam import pithermalcam
 import cv2
-# import io
-# import picamera
+import io
+import libcamera
+from picamera2 import Picamera2
 import RPi.GPIO as GPIO
 import time
 from flask import Response, request
@@ -11,7 +12,7 @@ import threading
 import time, socket, logging, traceback
 
 # board numbering system to use
-GPIO.setmode(GPIO.BOARD)
+#GPIO.setmode(GPIO.BOARD)
 
 # variable to hold a short delay time
 delayTime = 0.2
@@ -35,6 +36,7 @@ current_camera = 1
 thermal_camera = 1
 imx708_camera = 2
 usb_camera = 3
+dist_cm = 0
 lock = threading.Lock()
 
 # initialize a flask object
@@ -44,12 +46,15 @@ app = Flask(__name__)
 def index():
     return render_template("index - Copy.html")  # Assuming your HTML file is named index.html
 
+# @app.route("/video_feed")
+# def video_feed():
+# 	# return the response generated along with the specific media
+# 	# type (mime type)
+# 	return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
+
 @app.route('/changeCameraBtn')
 def switch_camera():
     global thermal_camera, imx708_camera, usb_camera, current_camera
-    thermal_camera = 1
-    imx708_camera = 2
-    usb_camera = 3
     
     current_camera = thermal_camera
     if current_camera == 1:
@@ -60,9 +65,10 @@ def switch_camera():
         current_camera = 1
     return "Camera switched."
 
-@app.route('/distance-value')
+
 def distance_value():
     # start the pulse to get the sensor to send the ping
+    while True:
         # set trigger pin low for 2 micro seconds
         GPIO.output(trigPin, 0)
         time.sleep(2E-6)
@@ -93,72 +99,106 @@ def distance_value():
         # divide in half since the time of travel is out and back
         dist_cm = (pingTravelTime*34444)/2
         # dist_inch = dist_cm * 0.3937008 # 1 cm = 0.3937008 inches
-        print('Distance = ','inches |', round(dist_cm, 1),
-              'cm')
+        print('Distance = ','inches |', round(dist_cm, 1),'cm')
         # sleep to slow things down
         time.sleep(delayTime)
-        return dist_cm
 
 def get_ip_address():
-	"""Find the current IP address of the device"""
-	s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	s.connect(("8.8.8.8", 80))
-	ip_address=s.getsockname()[0]
-	s.close()
-	return ip_address
+    """Find the current IP address of the device"""
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip_address=s.getsockname()[0]
+    s.close()
+    return ip_address
 
 def start_server(output_folder:str = '/home/pi/pithermalcam/saved_snapshots/'):
-	global thermcam
-	# initialize the video stream and allow the camera sensor to warmup
-	thermcam = pithermalcam(output_folder=output_folder)
-	time.sleep(0.1)
+        global thermcam
+        # initialize the video stream and allow the camera sensor to warmup
+        thermcam = pithermalcam(output_folder=output_folder)
+        time.sleep(0.1)
 
-	# start a thread that will perform motion detection
-	t = threading.Thread(target=pull_images)
-	t.daemon = True
-	t.start()
+        # start a thread that will perform motion detection
+        t = threading.Thread(target=pull_images)
+        t2 = threading.Thread(target=distance_value)
+        t.daemon = True
+        t.start()
+        t2.daemon = True
+        t2.start()
 
-	ip=get_ip_address()
-	port=8000
+        ip=get_ip_address()
+        port=8000
 
-	print(f'Server can be found at {ip}:{port}')
+        print(f'Server can be found at {ip}:{port}')
 
-	# start the flask app
-	app.run(host=ip, port=port, debug=False,threaded=True, use_reloader=False)
+        # start the flask app
+        app.run(host=ip, port=port, debug=False,threaded=True, use_reloader=False)
 
 def pull_images():
-    global outputFrame, thermcam, current_camera
+    global outputFrame, thermcam, current_camera, capture_file
 
     while True:
+        print (current_camera)
         if current_camera == thermal_camera:
             current_frame=None
             try:
                 current_frame = thermcam.update_image_frame()
-            except Exception:
+            except Exception as e:
+                print (e)
                 print("Too many retries error caught; continuing...")
 
-			# If we have a frame, acquire the lock, set the output frame, and release the lock
+            # If we have a frame, acquire the lock, set the output frame, and release the lock
             if current_frame is not None:
                 with lock:
                     outputFrame = current_frame.copy()
         elif current_camera == imx708_camera:
-            # with picamera.PiCamera() as camera:
-            #     camera.resolution = (640, 480)
-            #     camera.framerate = 24
-            #     stream = io.BytesIO()
-        
-            #     for _ in camera.capture_continous(stream, 'jpeg', use_video_port=True):
-            #         stream.seek(0)
-            #         yield b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + stream.read() + b'\r\n'
-            #         stream.seek(0)
-            #         stream.truncate()
+             #with libcamera.Camera() as camera:
+             #    camera.configure(width=640, height=480)
+    
+             #    for _ in camera.capture_sequence([io.BytesIO()], format='jpeg'):
+             #         outputframe = _.data
+             with Picamera2() as camera:
+                camera.start()
+                camera.resolution = (640, 480)
+                camera.framerate = 24
+                stream = io.BytesIO()
+                if current_frame is not None:
+                    with lock:
+                        outputFrame = capture(stream, format='jpeg')
+                #for _ in camera.capture_file(stream):
+                #    stream.seek(0)
+                #    outputFrame = stream.read()
+                #    stream.seek(0)
+                #    stream.truncate()
+                    
+               # for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
+               #     stream.seek(0)
+               #     outputframe = stream.read()
+                #    stream.seek(0)
+                #    stream.truncate()
+                
+             ##with picamera2.Picamera2() as camera:
+              #  camera.resolution = (640, 480)
+              #  camera.framerate = 24
+             #   stream = io.BytesIO()
 
-            ret, frame = imx708_camera.read()
+              #  for _ in camera.capture_continuous(stream, 'jpeg', use_video_port=True):
+              #      stream.seek(0)
+               #     outputframe = stream.read()
+              #      stream.seek(0)
+               #     stream.truncate()
+               
+            #ret, frame = imx708_camera.read()
             # processed_frame = process_imx708_frame(frame)
         elif current_camera == usb_camera:
             ret, frame = usb_camera.read()
             # processed_frame = process_usb_frame(frame)
 
+
+def generate_distance():
+    global dist_cm
+
+    while True:
+        yield dist_cm
 
 def generate():
     global outputFrame
@@ -195,6 +235,15 @@ def generate():
 def video_feed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
+@app.route("/dist_value")
+def dist_value():
+    distance_value()
+    time.sleep(delayTime)
+    return Response(generate_distance() , mimetype="text/plain")
+
+
 # If this is the main thread, simply start the server
 if __name__ == '__main__':
+    print (dist_cm)
     start_server()
+    
