@@ -212,19 +212,15 @@
       // Add functionality for the "Change Camera" button
       console.log('Change Camera button clicked');
       const url = "/changeCameraBtn";
-      try 
-      {
+      try {
         const response = await fetch(url);
-        if (!response.ok) 
-        {
+        if (!response.ok) {
           throw new Error(`Response status: ${response.status}`);
         }
 
         const json = await response.json();
         console.log(json);
-      } 
-      catch (error) 
-      {
+      } catch (error) {
         console.error(error.message);
       }
     });
@@ -287,19 +283,15 @@
           // Add functionality for the 'C' key
           console.log('C key pressed');
           const url = "/changeCameraBtn";
-          try 
-          {
+          try {
             const response = await fetch(url);
-            if (!response.ok) 
-            {
+            if (!response.ok) {
               throw new Error(`Response status: ${response.status}`);
             }
 
             const json = await response.json();
             console.log(json);
-          } 
-          catch (error) 
-          {
+          } catch (error) {
             console.error(error.message);
           }
           break;
@@ -389,28 +381,61 @@
     });
 
 
-      async function getDistanceValue()
-      {
-        const url = "/dist_value";
-          try 
+    document.addEventListener('DOMContentLoaded', function() 
+        {
+          function fetchDistanceValue() 
           {
-            const response = await fetch(url);
-            if (!response.ok) 
-            {
-              throw new Error(`Response status: ${response.status}`);
-            }
-        const distanceValueElement = document.getElementById('distance-value');
-        const dist_cm = await response.json(); // Ensure you parse the response correctly
-        distanceValueElement.textContent = dist_cm; // Update the displayed value
+            var scriptRoot = "{{ request.script_root|tojson|safe }}";
+            
+            $.getJSON(scriptRoot + "/dist_value", function(data) {
+                $("distance-value").text(data.dist);
 
-        console.log(dist_cm);
-        } 
-          catch (error) 
-          {
-            console.error(error.message);
-          }
+            });
+          };
+
+            // Call the function to fetch and update the dist_cm value
+            fetchDistanceValue();
+        });
+
+    /*document.addEventListener('DOMContentLoaded', function() {
+      function fetchDistanceValue() {
+            fetch('/dist_value')
+                .then(response => response.text())
+                .then(data => {
+                    // Update the distance-value element with the received value
+                    const distanceValueElement = document.getElementById('distance-value');
+                    distanceValueElement.innerHTML = data + ' cm';
+                })
+                .catch(error => {
+                    console.error('Error fetching distance value:', error);
+                });
         }
-      getDistanceValue();
+
+        // Call the function to fetch and update the dist_cm value
+        fetchDistanceValue();
+    });
+    
+    async function getDistanceValue()
+        {
+          const url = "/dist_value";
+            try 
+            {
+              const response = await fetch(url);
+              if (!response.ok) 
+              {
+                throw new Error(`Response status: ${response.status}`);
+              }
+          const distanceValueElement = document.getElementById('distance-value');
+          const dist_cm = await response.text(); // Ensure you parse the response correctly
+          distanceValueElement.textContent = dist_cm; // Update the displayed value
+          console.log(dist_cm);
+          } 
+            catch (error) 
+            {
+              console.error(error.message);
+            }
+        }
+    getDistanceValue(); */
 
     let isGreen = false;
 

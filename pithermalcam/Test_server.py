@@ -69,11 +69,12 @@ def switch_camera():
     return "Camera switched."
 
 
-def distance_value():
+#def distance_value():
+    #global dist_cm
     # start the pulse to get the sensor to send the ping
-    while True:
-        dist_cm = 30
-        print(dist_cm)
+    #while True:
+        #dist_cm = 30
+        #time.sleep(delayTime)
         # # set trigger pin low for 2 micro seconds
         # GPIO.output(trigPin, 0)
         # time.sleep(2E-6)
@@ -124,7 +125,7 @@ def start_server(output_folder:str = '/home/pi/pithermalcam/saved_snapshots/'):
 
         # start a thread that will perform motion detection
         t = threading.Thread(target=pull_images)
-        t2 = threading.Thread(target=distance_value)
+        t2 = threading.Thread(target=generate_distance)
         t.daemon = True
         t.start()
         t2.daemon = True
@@ -142,7 +143,7 @@ def pull_images():
     global outputFrame, thermcam, current_camera, stream
 
     while True:
-        print (current_camera)
+        #print (current_camera)
         if current_camera == thermal_camera:
             current_frame=None
             try:
@@ -177,9 +178,14 @@ def pull_images():
 
 def generate_distance():
     global dist_cm
-
     while True:
-        yield dist_cm
+        dist_cm = 30
+        yield str(dist_cm)
+
+#def generate_distance():
+#    global dist_cm
+#    while True:
+#        yield str(dist_cm)
 
 def generate():
     global outputFrame
@@ -216,15 +222,20 @@ def generate():
 def video_feed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
-@app.route("/dist_value")
+@app.route('/dist_value', methods = ['GET'])
 def dist_value():
-    #distance_value()
-    time.sleep(delayTime)
-    return Response(generate_distance() , mimetype="text/plain")
+    global dist_cm
+    dist = round(generate_distance())
+    return jsonify (dist=dist)
+    
+#@app.route("/dist_value")
+#def dist_value():
+#    global dist_cm
+#    #distance_value()
+#    return Response(generate_distance() , mimetype="text/plain")
 
 
 # If this is the main thread, simply start the server
 if __name__ == '__main__':
-    print (dist_cm)
     start_server()
     
