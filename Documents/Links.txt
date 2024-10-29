@@ -4,3 +4,9 @@ https://www.raspberrypi.com/documentation/computers/camera_software.html
 https://www.raspberrypi.com/documentation/computers/camera_software.html
 https://github.com/raspberrypi/picamera2/tree/055032e95b1c9f2312565dc88ab5bf06a1a68550/examples
 https://www.simplilearn.com/tutorials/python-tutorial/yield-in-python
+https://stackoverflow.com/questions/71787870/oserror-libmmal-so-cannot-open-shared-object-file-no-such-file-or-directory-w
+https://stackoverflow.com/questions/27777547/missing-libmmal-so-with-picamera-library
+https://developer.mozilla.org/en-US/docs/Web/API/EventSource
+https://realpython.com/python-sleep/
+https://stackoverflow.com/questions/31948285/display-data-streamed-from-a-flask-view-as-it-updates
+https://pinout.xyz/
