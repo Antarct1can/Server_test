@@ -18,8 +18,8 @@ import time, socket, logging, traceback
 delayTime = 0.2
 
 # setup trigger and echo pins
-trigPin = 23
-echoPin = 24
+trigPin = 11
+echoPin = 8
 GPIO.setup(trigPin, GPIO.OUT)
 GPIO.setup(echoPin, GPIO.IN)
 
@@ -69,45 +69,42 @@ def switch_camera():
     return "Camera switched."
 
 
-#def distance_value():
-    #global dist_cm
+def distance_value():
+    global dist_cm
     # start the pulse to get the sensor to send the ping
-    #while True:
-        #dist_cm = 30
-        #time.sleep(delayTime)
-        # # set trigger pin low for 2 micro seconds
-        # GPIO.output(trigPin, 0)
-        # time.sleep(2E-6)
-        # # set trigger pin high for 10 micro seconds
-        # GPIO.output(trigPin, 1)
-        # time.sleep(10E-6)
-        # # go back to zero - communication compete to send ping
-        # GPIO.output(trigPin, 0)
-        # # now need to wait till echo pin goes high to start the timer
-        # # this means the ping has been sent
-        # while GPIO.input(echoPin) == 0:
-        #     pass
-        # # start the time - use system time
-        # echoStartTime = time.time()
-        # # wait for echo pin to go down to zero
-        # while GPIO.input(echoPin) == 1:
-        #     pass
-        # echoStopTime = time.time()
-        # # calculate ping travel time
-        # pingTravelTime = echoStopTime - echoStartTime
-        # # Use the time to calculate the distance to the target.
-        # # speed of sound at 72 deg F is 344.44 m/s
-        # # from weather.gov/epz/wxcalc_speedofsound.
-        # # equations used by calculator at website above.
-        # # speed of sound = 643.855*((temp_in_kelvin/273.15)^0.5)
-        # # temp_in_kelvin = ((5/9)*(temp_in_F - 273.15)) + 32
-        # #
-        # # divide in half since the time of travel is out and back
-        # dist_cm = (pingTravelTime*34444)/2
-        # # dist_inch = dist_cm * 0.3937008 # 1 cm = 0.3937008 inches
-        # print('Distance = ','inches |', round(dist_cm, 1),'cm')
-        # # sleep to slow things down
-        # time.sleep(delayTime)
+    while True:
+        time.sleep(delayTime)
+        # set trigger pin low for 2 micro secondsF
+        GPIO.output(trigPin, 0)
+        time.sleep(2E-6)
+        # set trigger pin high for 10 micro seconds
+        GPIO.output(trigPin, 1)
+        time.sleep(10E-6)
+        # go back to zero - communication compete to send ping
+        GPIO.output(trigPin, 0)
+        # now need to wait till echo pin goes high to start the timer
+        # this means the ping has been sent
+        while GPIO.input(echoPin) == 0:
+            pass
+        # start the time - use system time
+        echoStartTime = time.time()
+        # wait for echo pin to go down to zero
+        while GPIO.input(echoPin) == 1:
+            pass
+        echoStopTime = time.time()
+        # calculate ping travel time
+        pingTravelTime = echoStopTime - echoStartTime
+        # Use the time to calculate the distance to the target.
+        # speed of sound at 72 deg F is 344.44 m/s
+        # from weather.gov/epz/wxcalc_speedofsound.
+        # equations used by calculator at website above.
+        # speed of sound = 643.855*((temp_in_kelvin/273.15)^0.5)
+        # temp_in_kelvin = ((5/9)*(temp_in_F - 273.15)) + 32
+
+        # divide in half since the time of travel is out and back
+        dist_cm = (pingTravelTime*34444)/2
+        # sleep to slow things down
+        time.sleep(delayTime)
 
 def get_ip_address():
     """Find the current IP address of the device"""
@@ -125,7 +122,7 @@ def start_server(output_folder:str = '/home/pi/pithermalcam/saved_snapshots/'):
 
         # start a thread that will perform motion detection
         t = threading.Thread(target=pull_images)
-        t2 = threading.Thread(target=generate_distance)
+        t2 = threading.Thread(target=distance_value)
         t.daemon = True
         t.start()
         t2.daemon = True
@@ -162,10 +159,14 @@ def pull_images():
     
              #    for _ in camera.capture_sequence([io.BytesIO()], format='jpeg'):
              #         outputframe = _.data
-            
-            stream = io.BytesIO()
-
-            if current_frame is not None:
+            stream = None
+            try:
+                stream = io.BytesIO()
+            except Exception as e:
+                print (e)
+                print("Too many retries error caught; continuing...")
+        
+            if stream is not None:
                 with lock:
                     outputFrame = camera.capture_file(stream, format='jpeg')
                
@@ -178,14 +179,11 @@ def pull_images():
 
 def generate_distance():
     global dist_cm
+    #distance_value()
     while True:
-        dist_cm = 30
-        yield str(dist_cm)
+        yield ("{}\n".format(dist_cm))
 
-#def generate_distance():
-#    global dist_cm
-#    while True:
-#        yield str(dist_cm)
+
 
 def generate():
     global outputFrame
@@ -200,39 +198,17 @@ def generate():
 
         yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
-# # Modify the generate() function to provide camera feed frames
-# def generate():
-#     global outputFrame, lock
-#     while True:
-#         with lock:
-#             if outputFrame is not None:
-#                 # Encode the frame in JPEG format
-#                 (flag, encodedImage) = cv2.imencode(".jpg", outputFrame)
-
-#                 # Ensure the frame was successfully encoded
-#                 if not flag:
-#                     continue
-
-#                 # Yield the output frame in the byte format
-#                 yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + 
-#                        bytearray(encodedImage) + b'\r\n')
 
 # Update the video_feed route to return the camera feed frames
 @app.route("/video_feed")
 def video_feed():
     return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
-@app.route('/dist_value', methods = ['GET'])
+    
+@app.route("/dist_value")
 def dist_value():
     global dist_cm
-    dist = round(generate_distance())
-    return jsonify (dist=dist)
-    
-#@app.route("/dist_value")
-#def dist_value():
-#    global dist_cm
-#    #distance_value()
-#    return Response(generate_distance() , mimetype="text/plain")
+    return Response(generate_distance() , mimetype="text/plain")
 
 
 # If this is the main thread, simply start the server

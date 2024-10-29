@@ -381,61 +381,36 @@
     });
 
 
-    document.addEventListener('DOMContentLoaded', function() 
-        {
-          function fetchDistanceValue() 
-          {
-            var scriptRoot = "{{ request.script_root|tojson|safe }}";
-            
-            $.getJSON(scriptRoot + "/dist_value", function(data) {
-                $("distance-value").text(data.dist);
-
-            });
-          };
-
-            // Call the function to fetch and update the dist_cm value
-            fetchDistanceValue();
-        });
-
-    /*document.addEventListener('DOMContentLoaded', function() {
-      function fetchDistanceValue() {
-            fetch('/dist_value')
-                .then(response => response.text())
-                .then(data => {
-                    // Update the distance-value element with the received value
-                    const distanceValueElement = document.getElementById('distance-value');
-                    distanceValueElement.innerHTML = data + ' cm';
-                })
-                .catch(error => {
-                    console.error('Error fetching distance value:', error);
-                });
-        }
-
-        // Call the function to fetch and update the dist_cm value
-        fetchDistanceValue();
-    });
     
-    async function getDistanceValue()
-        {
-          const url = "/dist_value";
-            try 
-            {
-              const response = await fetch(url);
-              if (!response.ok) 
-              {
-                throw new Error(`Response status: ${response.status}`);
-              }
-          const distanceValueElement = document.getElementById('distance-value');
-          const dist_cm = await response.text(); // Ensure you parse the response correctly
-          distanceValueElement.textContent = dist_cm; // Update the displayed value
-          console.log(dist_cm);
-          } 
-            catch (error) 
-            {
-              console.error(error.message);
-            }
-        }
-    getDistanceValue(); */
+      var latest = document.getElementById('distance-value');
+    
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', '{{ url_for('dist_value')}}');
+      xhr.send();
+      var position = 0;
+
+      function handleNewData() 
+      {
+          var messages = xhr.responseText.split('\n');
+          messages.slice(position, -1).forEach(function(value) 
+          {
+              latest.textContent = value;  // update the latest value in place
+          });
+          position = messages.length - 1;
+      }
+
+      var timer;
+      timer = setInterval(function() 
+      {
+          // check the response for new data
+          handleNewData();
+          // stop checking once the response has ended
+          if (xhr.readyState == XMLHttpRequest.DONE) {
+              clearInterval(timer);
+              latest.textContent = 'Done';
+          }
+      }, 1000);
+    
 
     let isGreen = false;
 
