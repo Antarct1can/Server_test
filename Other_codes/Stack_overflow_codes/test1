@@ -1,0 +1,54 @@
+from math import sqrt
+from time import sleep
+import time, socket, logging, traceback
+from flask import Response, request
+from flask import Flask
+from flask import render_template
+
+
+# Set up Logger
+logging.basicConfig(filename='pithermcam.log',filemode='a',
+					format='%(asctime)s %(levelname)-8s [%(filename)s:%(name)s:%(lineno)d] %(message)s',
+					level=logging.WARNING,datefmt='%d-%b-%y %H:%M:%S')
+logger = logging.getLogger(__name__)
+
+
+app = Flask(__name__)
+@app.route("/")
+def index():
+    return render_template("index.html")
+
+
+def get_ip_address():
+    """Find the current IP address of the device"""
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip_address=s.getsockname()[0]
+    s.close()
+    return ip_address
+
+
+@app.route("/stream")
+def stream():
+    def generate():
+        for i in range(500):
+            yield "{}\n".format(sqrt(i))
+            sleep(1)
+
+    return app.response_class(generate(), mimetype="text/plain")
+
+
+def start_server(output_folder:str = '/home/pi/pithermalcam/saved_snapshots/'):
+        time.sleep(0.1)
+        ip=get_ip_address()
+        port=8000
+
+        print(f'Server can be found at {ip}:{port}')
+
+        # start the flask app
+        app.run(host=ip, port=port, debug=False,threaded=True, use_reloader=False)
+
+
+# If this is the main thread, simply start the server
+if __name__ == '__main__':
+    start_server()
