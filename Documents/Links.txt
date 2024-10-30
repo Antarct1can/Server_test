@@ -10,3 +10,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/EventSource
 https://realpython.com/python-sleep/
 https://stackoverflow.com/questions/31948285/display-data-streamed-from-a-flask-view-as-it-updates
 https://pinout.xyz/
+https://www.youtube.com/watch?v=_fdwE4EznYo (motors)
+
+https://github.com/raspberrypi/picamera2/issues/844 (camera!!!!)
+https://stackoverflow.com/questions/702165/how-do-i-implement-press-and-hold-button-javascript (Holding buttons in js)
