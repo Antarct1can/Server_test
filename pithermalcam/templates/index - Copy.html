@@ -122,7 +122,7 @@
       height: 50px;
     }
     
-    #color-change-button {
+    #brakeBtn {
       padding: 0;
       width: 50px;
       height: 50px;
@@ -154,10 +154,10 @@
   <div class='container'>
     <img src="{{ url_for('video_feed') }}" class='video'>
     <button type="button" class="btn btn-default right-corner" id="changeCameraBtn">Change Camera</button>
-    <button type="button" class="btn btn-default arrow-btn arrow-up" id="upBtn">?</button>
-    <button type="button" class="btn btn-default arrow-btn arrow-left" id="leftBtn">?</button>
-    <button type="button" class="btn btn-default arrow-btn arrow-down" id="downBtn">?</button>
-    <button type="button" class="btn btn-default arrow-btn arrow-right" id="rightBtn">?</button>
+    <button type="button" class="btn btn-default arrow-btn arrow-up" id="upBtn">Up</button>
+    <button type="button" class="btn btn-default arrow-btn arrow-left" id="leftBtn">Left</button>
+    <button type="button" class="btn btn-default arrow-btn arrow-down" id="downBtn">Down</button>
+    <button type="button" class="btn btn-default arrow-btn arrow-right" id="rightBtn">Right</button>
     <button type="button" class="btn btn-default fire-btn" id="fireBtn">Fire</button>
 
     <button type="button" class="btn btn-default wBtn" id="wBtn">W</button>
@@ -166,7 +166,7 @@
     <button type="button" class="btn btn-default dBtn" id="dBtn">D</button>
 
     <!-- <button id="brakeBtn" class="button">Brake</button> -->
-    <button id="color-change-button" onclick="toggleColor()">Brake</button>
+    <button id="brakeBtn" onclick="toggleColor()">Brake</button>
 
   </div>
   
@@ -188,32 +188,75 @@
       button.classList.remove('active');
     }
 
-    document.getElementById('upBtn').addEventListener('click', function () {
-      // Add functionality for the up button
+    document.getElementById('upBtn').addEventListener('click', async function () {
       console.log('Up button clicked');
+      const upurl = "/upBtn";
+          try {
+            const response = await fetch(upurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
     });
 
-    document.getElementById('leftBtn').addEventListener('click', function () {
-      // Add functionality for the left button
+    document.getElementById('leftBtn').addEventListener('click', async function () {
       console.log('Left button clicked');
+      const lefturl = "/leftBtn";
+          try {
+            const response = await fetch(lefturl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
     });
 
-    document.getElementById('downBtn').addEventListener('click', function () {
-      // Add functionality for the down button
+    document.getElementById('downBtn').addEventListener('click', async function () {
       console.log('Down button clicked');
+      const downurl = "/downBtn";
+          try {
+            const response = await fetch(downurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
     });
 
-    document.getElementById('rightBtn').addEventListener('click', function () {
-      // Add functionality for the right button
+    document.getElementById('rightBtn').addEventListener('click', async function () {
       console.log('Right button clicked');
+      const righturl = "/rightBtn";
+          try {
+            const response = await fetch(righturl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
     });
 
     document.getElementById('changeCameraBtn').addEventListener('click', async function () {
-      // Add functionality for the "Change Camera" button
       console.log('Change Camera button clicked');
-      const url = "/changeCameraBtn";
+      const cameraurl = "/changeCameraBtn";
       try {
-        const response = await fetch(url);
+        const response = await fetch(cameraurl);
         if (!response.ok) {
           throw new Error(`Response status: ${response.status}`);
         }
@@ -225,66 +268,131 @@
       }
     });
 
-    document.getElementById('fireBtn').addEventListener('click', function () {
-      // Add functionality for the "Fire" button
+    document.getElementById('fireBtn').addEventListener('click', async function () {
       console.log('Fire button clicked');
+      const fireurl = "/fireBtn";
+          try {
+            const response = await fetch(fireurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
     });
 
     document.getElementById('wBtn').addEventListener('click', function () {
-      // Add functionality for the "Fire" button
+      // Add functionality for the "W" button
       console.log('W button clicked');
     });
 
     document.getElementById('aBtn').addEventListener('click', function () {
-      // Add functionality for the "Fire" button
+      // Add functionality for the "A" button
       console.log('A button clicked');
     });
 
     document.getElementById('sBtn').addEventListener('click', function () {
-      // Add functionality for the "Fire" button
+      // Add functionality for the "S" button
       console.log('S button clicked');
     });
 
     document.getElementById('dBtn').addEventListener('click', function () {
-      // Add functionality for the "Fire" button
+      // Add functionality for the "D" button
       console.log('D button clicked');
     });
     
-    document.getElementById('color-change-button').addEventListener('click', function () {
-      // Add functionality for the "Fire" button
+    document.getElementById('brakeBtn').addEventListener('click', async function () {
       console.log('brake button clicked');
+      const brakeurl = "/brakeBtn";
+          try {
+            const response = await fetch(brakeurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
     });
     
         document.addEventListener('keydown', async function (event) {
       switch (event.key) {
         case 'ArrowUp':
           setButtonActive(document.getElementById('upBtn'));
-          // Add functionality for the up arrow key
           console.log('Up arrow key pressed');
+          const upurl = "/upBtn";
+          try {
+            const response = await fetch(upurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
           break;
         case 'ArrowLeft':
           setButtonActive(document.getElementById('leftBtn'));
-          // Add functionality for the left arrow key
           console.log('Left arrow key pressed');
+          const lefturl = "/leftBtn";
+          try {
+            const response = await fetch(lefturl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
           break;
         case 'ArrowDown':
           setButtonActive(document.getElementById('downBtn'));
-          // Add functionality for the down arrow key
           console.log('Down arrow key pressed');
+          const downurl = "/downBtn";
+          try {
+            const response = await fetch(downurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
           break;
         case 'ArrowRight':
           setButtonActive(document.getElementById('rightBtn'));
-          // Add functionality for the right arrow key
           console.log('Right arrow key pressed');
+          const righturl = "/rightBtn";
+          try {
+            const response = await fetch(righturl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
           break;
         case 'c':
         case 'C':
           setButtonActive(document.getElementById('changeCameraBtn'));
-          // Add functionality for the 'C' key
           console.log('C key pressed');
-          const url = "/changeCameraBtn";
+          const cameraurl = "/changeCameraBtn";
           try {
-            const response = await fetch(url);
+            const response = await fetch(cameraurl);
             if (!response.ok) {
               throw new Error(`Response status: ${response.status}`);
             }
@@ -298,39 +406,62 @@
         case 'f':
         case 'F':
           setButtonActive(document.getElementById('fireBtn'));
-          // Add functionality for the 'F' key
           console.log('F key pressed');
+          const fireurl = "/fireBtn";
+          try {
+            const response = await fetch(fireurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
           break;
         case 'w':
         case 'W':
           setButtonActive(document.getElementById('wBtn'));
-          // Add functionality for the 'F' key
+          // Add functionality for the 'W' key
           console.log('W key pressed');
           break;
         case 'a':
         case 'A':
           setButtonActive(document.getElementById('aBtn'));
-          // Add functionality for the 'F' key
+          // Add functionality for the 'A' key
           console.log('A key pressed');
           break;
         case 's':
         case 'S':
           setButtonActive(document.getElementById('sBtn'));
-          // Add functionality for the 'F' key
+          // Add functionality for the 'S' key
           console.log('S key pressed');
           break;
         case 'd':
         case 'D':
           setButtonActive(document.getElementById('dBtn'));
-          // Add functionality for the 'F' key
+          // Add functionality for the 'D' key
           console.log('D key pressed');
           break;
         case 'b':
         case 'B':
-          setButtonActive(document.getElementById('color-change-button'));
-          // Add functionality for the 'F' key
+          setButtonActive(document.getElementById('brakeBtn'));
+          // Add functionality for the 'Brake' key
           console.log('brake key pressed');
           toggleColor();
+          const brakeurl = "/brakeBtn";
+          try {
+            const response = await fetch(brakeurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
           break;
       }
     });
@@ -375,7 +506,7 @@
           break;
         case 'b':
         case 'B':
-          setButtonInactive(document.getElementById('color-change-button'));
+          setButtonInactive(document.getElementById('brakeBtn'));
           break;
       }
     });
@@ -415,7 +546,7 @@
     let isGreen = false;
 
     function toggleColor() {
-      const button = document.getElementById('color-change-button');
+      const button = document.getElementById('brakeBtn');
 
       if (isGreen) {
         button.style.backgroundColor = 'red';

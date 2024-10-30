@@ -2,8 +2,11 @@ from pi_therm_cam import pithermalcam
 import cv2
 import io
 import libcamera
+import picamera2
 from picamera2 import Picamera2
 import RPi.GPIO as GPIO
+from gpiozero import Servo
+from gpiozero.pins.pigpio import PiGPIOFactory
 import time
 from flask import Response, request
 from flask import Flask
@@ -11,8 +14,6 @@ from flask import render_template
 import threading
 import time, socket, logging, traceback
 
-# board numbering system to use
-#GPIO.setmode(GPIO.BOARD)
 
 # variable to hold a short delay time
 delayTime = 0.2
@@ -20,8 +21,44 @@ delayTime = 0.2
 # setup trigger and echo pins
 trigPin = 11
 echoPin = 8
+firePin = 16
+upPin = 23
+downPin = 23
+rightPin = 24
+leftPin = 24
+brakePin1 = 17
+brakePin2 = 27
 GPIO.setup(trigPin, GPIO.OUT)
 GPIO.setup(echoPin, GPIO.IN)
+
+
+fireFactory = PiGPIOFactory()
+fireServo = Servo(firePin, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = fireFactory)
+fireServo.value = None;
+
+upFactory = PiGPIOFactory()
+upServo = Servo(upPin, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = upFactory)
+upServo.value = None;
+
+downFactory = PiGPIOFactory()
+downServo = Servo(downPin, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = downFactory)
+downServo.value = None;
+
+rightFactory = PiGPIOFactory()
+rightServo = Servo(rightPin, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = rightFactory)
+rightServo.value = None;
+
+leftFactory = PiGPIOFactory()
+leftServo = Servo(leftPin, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = leftFactory)
+leftServo.value = None;
+
+brake1Factory = PiGPIOFactory()
+brake1Servo = Servo(brakePin1, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = brake1Factory)
+brake1Servo.value = None;
+
+brake2Factory = PiGPIOFactory()
+brake2Servo = Servo(brakePin2, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = brake2Factory)
+brake2Servo.value = None;
 
 # Set up Logger
 logging.basicConfig(filename='pithermcam.log',filemode='a',
@@ -38,10 +75,13 @@ imx708_camera = 2
 usb_camera = 3
 dist_cm = 0
 lock = threading.Lock()
-with Picamera2() as camera:
+
+with picamera2.Picamera2() as camera:
     camera.start()
     camera.resolution = (640, 480)
     camera.framerate = 24
+
+    
 # initialize a flask object
 app = Flask(__name__)
 
@@ -67,6 +107,65 @@ def switch_camera():
     elif current_camera == 3:
         current_camera = 1
     return "Camera switched."
+
+@app.route('/fireBtn')
+def firebutton():    
+    fireServo.max()
+    time.sleep(0.5)
+    fireServo.min()
+    time.sleep(0.5)
+    fireServo.value = None;
+    return "Weapon fired"
+
+@app.route('/upBtn')
+def upbutton():    
+    upServo.max()
+    time.sleep(0.5)
+    upServo.min()
+    time.sleep(0.5)
+    upServo.value = None;
+    return "Weapon up"
+    
+@app.route('/downBtn')
+def downbutton():    
+    downServo.max()
+    time.sleep(0.5)
+    downServo.min()
+    time.sleep(0.5)
+    downServo.value = None;
+    return "Weapon down"
+    
+@app.route('/rightBtn')
+def rightbutton():    
+    rightServo.max()
+    time.sleep(0.5)
+    rightServo.min()
+    time.sleep(0.5)
+    rightServo.value = None;
+    return "Weapon right"
+    
+@app.route('/leftBtn')
+def leftbutton():    
+    leftServo.max()
+    time.sleep(0.5)
+    leftServo.min()
+    time.sleep(0.5)
+    leftServo.value = None;
+    return "Weapon left"
+    
+    
+@app.route('/brakeBtn')
+def brakebutton():    
+    brake1Servo.max()
+    brake2Servo.max()
+    time.sleep(0.5)
+    brake1Servo.min()
+    brake2Servo.min()
+    time.sleep(0.5)
+    leftServo.value = None;
+    return "Weapon left"
+    
+
 
 
 def distance_value():
