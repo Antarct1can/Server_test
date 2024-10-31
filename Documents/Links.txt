@@ -13,4 +13,13 @@ https://pinout.xyz/
 https://www.youtube.com/watch?v=_fdwE4EznYo (motors)
 
 https://github.com/raspberrypi/picamera2/issues/844 (camera!!!!)
+https://randomnerdtutorials.com/raspberry-pi-mjpeg-streaming-web-server-picamera2/
+https://www.youtube.com/watch?v=NOAY1aaVPAw&t=1s
+https://github.com/shillehbean/youtube-p2/blob/main/stream_usb_camera.py
+https://www.codeproject.com/Articles/665518/Raspberry-Pi-as-low-cost-HD-surveillance-camera
+https://forums.raspberrypi.com/viewtopic.php?t=70917
+
+https://www.youtube.com/watch?app=desktop&v=vF9QRJwJXJk (usb camera)
+https://www.hackster.io/Shilleh/how-to-stream-video-from-raspberry-pi-to-local-usb-camera-f9a8bb
+
 https://stackoverflow.com/questions/702165/how-do-i-implement-press-and-hold-button-javascript (Holding buttons in js)
