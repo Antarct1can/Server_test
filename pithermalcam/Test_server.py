@@ -68,18 +68,19 @@ logger = logging.getLogger(__name__)
 
 # initialize the output frame and a lock used to ensure thread-safe exchanges of the output frames (useful when multiple browsers/tabs are viewing the stream)
 outputFrame = None
+RGBFrame = None
 thermcam = None
-current_camera = 1
 thermal_camera = 1
 imx708_camera = 2
 usb_camera = 3
+current_camera = thermal_camera
 dist_cm = 0
 lock = threading.Lock()
 
-with picamera2.Picamera2() as camera:
-    camera.start()
-    camera.resolution = (640, 480)
-    camera.framerate = 24
+
+camera1 = Picamera2(0)
+camera1.configure(camera1.create_video_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
+
 
     
 # initialize a flask object
@@ -100,12 +101,14 @@ def switch_camera():
     global thermal_camera, imx708_camera, usb_camera, current_camera
     
     current_camera = thermal_camera
-    if current_camera == 1:
-        current_camera = 2
-    elif current_camera == 2:
-        current_camera = 3
-    elif current_camera == 3:
-        current_camera = 1
+    if current_camera == thermal_camera:
+        current_camera = imx708_camera
+        
+    elif current_camera == imx708_camera:
+        current_camera = thermal_camera
+        camera1.stop()
+    elif current_camera == usb_camera:
+        current_camera = thermal_camera
     return "Camera switched."
 
 @app.route('/fireBtn')
@@ -236,10 +239,11 @@ def start_server(output_folder:str = '/home/pi/pithermalcam/saved_snapshots/'):
         app.run(host=ip, port=port, debug=False,threaded=True, use_reloader=False)
 
 def pull_images():
-    global outputFrame, thermcam, current_camera, stream
-
+    global outputFrame, thermcam, current_camera, RGBFrame
+    #indextest = 0
     while True:
-        #print (current_camera)
+        print (current_camera)
+        #indextest = indextest + 1
         if current_camera == thermal_camera:
             current_frame=None
             try:
@@ -252,23 +256,14 @@ def pull_images():
             if current_frame is not None:
                 with lock:
                     outputFrame = current_frame.copy()
+                    
+                    
         elif current_camera == imx708_camera:
-             #with libcamera.Camera() as camera:
-             #    camera.configure(width=640, height=480)
-    
-             #    for _ in camera.capture_sequence([io.BytesIO()], format='jpeg'):
-             #         outputframe = _.data
-            stream = None
-            try:
-                stream = io.BytesIO()
-            except Exception as e:
-                print (e)
-                print("Too many retries error caught; continuing...")
+            with lock:
+                camera1.start()
+                RGBFrame = camera1.capture_array()
+                
         
-            if stream is not None:
-                with lock:
-                    outputFrame = camera.capture_file(stream, format='jpeg')
-               
             #ret, frame = imx708_camera.read()
             # processed_frame = process_imx708_frame(frame)
         elif current_camera == usb_camera:
@@ -278,25 +273,30 @@ def pull_images():
 
 def generate_distance():
     global dist_cm
-    #distance_value()
     while True:
         yield ("{}\n".format(dist_cm))
 
 
 
 def generate():
-    global outputFrame
+    global outputFrame, RGBFrame
 
     while True:
-        with lock:
-            if outputFrame is None:
-                continue
-            (flag, encodedImage) = cv2.imencode(".jpg", outputFrame)
-            if not flag:
-                continue
+        if current_camera == thermal_camera:
+            with lock:
+                if outputFrame is None:
+                    continue
+                (flag, encodedImage) = cv2.imencode(".jpg", outputFrame)
+                if not flag:
+                    continue
 
-        yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
-
+            yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
+            
+        elif current_camera == imx708_camera:
+            with lock:
+                ret, buffer = cv2.imencode('.jpg', RGBFrame)
+                RGBFrame = buffer.tobytes()
+            yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + RGBFrame + b'\r\n')
 
 # Update the video_feed route to return the camera feed frames
 @app.route("/video_feed")
