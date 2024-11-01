@@ -81,7 +81,8 @@ lock = threading.Lock()
 camera1 = Picamera2(0)
 camera1.configure(camera1.create_video_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
 
-
+video_capture = cv2.VideoCapture(0)
+video_result = None
     
 # initialize a flask object
 app = Flask(__name__)
@@ -90,22 +91,17 @@ app = Flask(__name__)
 def index():
     return render_template("index - Copy.html")  # Assuming your HTML file is named index.html
 
-# @app.route("/video_feed")
-# def video_feed():
-# 	# return the response generated along with the specific media
-# 	# type (mime type)
-# 	return Response(generate(), mimetype="multipart/x-mixed-replace; boundary=frame")
 
 @app.route('/changeCameraBtn')
 def switch_camera():
     global thermal_camera, imx708_camera, usb_camera, current_camera
     
-    current_camera = thermal_camera
     if current_camera == thermal_camera:
         current_camera = imx708_camera
+        camera1.start()
         
     elif current_camera == imx708_camera:
-        current_camera = thermal_camera
+        current_camera = usb_camera
         camera1.stop()
     elif current_camera == usb_camera:
         current_camera = thermal_camera
@@ -239,10 +235,10 @@ def start_server(output_folder:str = '/home/pi/pithermalcam/saved_snapshots/'):
         app.run(host=ip, port=port, debug=False,threaded=True, use_reloader=False)
 
 def pull_images():
-    global outputFrame, thermcam, current_camera, RGBFrame
+    global outputFrame, thermcam, current_camera, RGBFrame, video_frame, video_result
     #indextest = 0
     while True:
-        print (current_camera)
+        #print (current_camera)
         #indextest = indextest + 1
         if current_camera == thermal_camera:
             current_frame=None
@@ -259,16 +255,11 @@ def pull_images():
                     
                     
         elif current_camera == imx708_camera:
-            with lock:
-                camera1.start()
-                RGBFrame = camera1.capture_array()
+            #with lock:
+            RGBFrame = camera1.capture_array()
                 
-        
-            #ret, frame = imx708_camera.read()
-            # processed_frame = process_imx708_frame(frame)
         elif current_camera == usb_camera:
-            ret, frame = usb_camera.read()
-            # processed_frame = process_usb_frame(frame)
+            video_result, video_frame = video_capture.read()  # read frames from the video
 
 
 def generate_distance():
@@ -279,7 +270,7 @@ def generate_distance():
 
 
 def generate():
-    global outputFrame, RGBFrame
+    global outputFrame, RGBFrame, video_frame, video_result
 
     while True:
         if current_camera == thermal_camera:
@@ -293,10 +284,25 @@ def generate():
             yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
             
         elif current_camera == imx708_camera:
-            with lock:
-                ret, buffer = cv2.imencode('.jpg', RGBFrame)
-                RGBFrame = buffer.tobytes()
-            yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + RGBFrame + b'\r\n')
+            #with lock:
+                
+            if RGBFrame is None:
+                continue
+            ret, buffer = cv2.imencode('.jpg', RGBFrame)
+            if not ret:
+                continue
+            rgbFrame = bytearray(buffer)
+
+            yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + rgbFrame + b'\r\n')
+        
+        elif current_camera == usb_camera:
+            if video_frame is None:
+                continue
+            ret, buffer = cv2.imencode('.jpg', video_frame )
+            if ret is False:
+                continue
+            usbFrame = bytearray(buffer)
+            yield (b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + usbFrame + b'\r\n')
 
 # Update the video_feed route to return the camera feed frames
 @app.route("/video_feed")
