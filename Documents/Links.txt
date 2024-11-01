@@ -21,5 +21,6 @@ https://forums.raspberrypi.com/viewtopic.php?t=70917
 
 https://www.youtube.com/watch?app=desktop&v=vF9QRJwJXJk (usb camera)
 https://www.hackster.io/Shilleh/how-to-stream-video-from-raspberry-pi-to-local-usb-camera-f9a8bb
+https://randomnerdtutorials.com/set-up-usb-camera-opencv-raspberry-pi/
 
 https://stackoverflow.com/questions/702165/how-do-i-implement-press-and-hold-button-javascript (Holding buttons in js)
