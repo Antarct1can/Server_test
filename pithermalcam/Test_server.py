@@ -1,7 +1,7 @@
 from pi_therm_cam import pithermalcam
 import cv2
 import io
-import libcamera
+from libcamera import controls
 import picamera2
 from picamera2 import Picamera2
 import RPi.GPIO as GPIO
@@ -37,27 +37,27 @@ fireServo = Servo(firePin, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/100
 fireServo.value = None;
 
 upFactory = PiGPIOFactory()
-upServo = Servo(upPin, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = upFactory)
+upServo = Servo(upPin, min_pulse_width = 0.4/1000, max_pulse_width = 2.6/1000, pin_factory = upFactory)
 upServo.value = None;
 
 downFactory = PiGPIOFactory()
-downServo = Servo(downPin, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = downFactory)
+downServo = Servo(downPin, min_pulse_width = 0.4/1000, max_pulse_width = 2.6/1000, pin_factory = downFactory)
 downServo.value = None;
 
 rightFactory = PiGPIOFactory()
-rightServo = Servo(rightPin, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = rightFactory)
+rightServo = Servo(rightPin, min_pulse_width = 0.4/1000, max_pulse_width = 2.6/1000, pin_factory = rightFactory)
 rightServo.value = None;
 
 leftFactory = PiGPIOFactory()
-leftServo = Servo(leftPin, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = leftFactory)
+leftServo = Servo(leftPin, min_pulse_width = 0.4/1000, max_pulse_width = 2.6/1000, pin_factory = leftFactory)
 leftServo.value = None;
 
 brake1Factory = PiGPIOFactory()
-brake1Servo = Servo(brakePin1, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = brake1Factory)
+brake1Servo = Servo(brakePin1, min_pulse_width = 0.4/1000, max_pulse_width = 2.6/1000, pin_factory = brake1Factory)
 brake1Servo.value = None;
 
 brake2Factory = PiGPIOFactory()
-brake2Servo = Servo(brakePin2, min_pulse_width = 0.5/1000, max_pulse_width = 2.5/1000, pin_factory = brake2Factory)
+brake2Servo = Servo(brakePin2, min_pulse_width = 0.4/1000, max_pulse_width = 2.6/1000, pin_factory = brake2Factory)
 brake2Servo.value = None;
 
 # Set up Logger
@@ -75,11 +75,15 @@ imx708_camera = 2
 usb_camera = 3
 current_camera = thermal_camera
 dist_cm = 0
+updown_value = 0
+rightleft_value = 0
+toggle_brake = 0
 lock = threading.Lock()
 
 
 camera1 = Picamera2(0)
 camera1.configure(camera1.create_video_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
+camera1.set_controls({"AfMode": controls.AfModeEnum.Continuous})
 
 video_capture = cv2.VideoCapture(0)
 video_result = None
@@ -117,52 +121,72 @@ def firebutton():
     return "Weapon fired"
 
 @app.route('/upBtn')
-def upbutton():    
-    upServo.max()
-    time.sleep(0.5)
-    upServo.min()
-    time.sleep(0.5)
-    upServo.value = None;
-    return "Weapon up"
+def upbutton():
+    global updown_value
+
+    if updown_value < 10:
+        upServo.value = updown_value/10
+        time.sleep(0.1)
+        #print("up")
+        updown_value = updown_value + 1
+        return "Weapon up"
+    else:
+        return "Max pitch"
     
 @app.route('/downBtn')
 def downbutton():    
-    downServo.max()
-    time.sleep(0.5)
-    downServo.min()
-    time.sleep(0.5)
-    downServo.value = None;
-    return "Weapon down"
+    global updown_value
+    
+    if updown_value > -10:
+        downServo.value = updown_value/10
+        time.sleep(0.1)
+        #print("down")
+        updown_value = updown_value - 1
+        return "Weapon down"
+    else:
+        return "Min pitch"
     
 @app.route('/rightBtn')
-def rightbutton():    
-    rightServo.max()
-    time.sleep(0.5)
-    rightServo.min()
-    time.sleep(0.5)
-    rightServo.value = None;
-    return "Weapon right"
+def rightbutton():
+    global rightleft_value
+    
+    if rightleft_value > -10:
+        rightServo.value = rightleft_value/10
+        time.sleep(0.1)
+        #print("right")
+        rightleft_value = rightleft_value - 1
+        return "Weapon right"
+    else:
+        return "Max yaw"    
     
 @app.route('/leftBtn')
 def leftbutton():    
-    leftServo.max()
-    time.sleep(0.5)
-    leftServo.min()
-    time.sleep(0.5)
-    leftServo.value = None;
-    return "Weapon left"
+    global rightleft_value
+    
+    if rightleft_value < 10:
+        leftServo.value = rightleft_value/10
+        time.sleep(0.1)
+        #print("left")
+        rightleft_value = rightleft_value + 1
+        return "Weapon left"
+    else:
+        return "Min yaw"   
     
     
 @app.route('/brakeBtn')
-def brakebutton():    
-    brake1Servo.max()
-    brake2Servo.max()
-    time.sleep(0.5)
-    brake1Servo.min()
-    brake2Servo.min()
-    time.sleep(0.5)
-    leftServo.value = None;
-    return "Weapon left"
+def brakebutton():
+    global toggle_brake   
+    if toggle_brake == 0:
+        brake1Servo.max()
+        brake2Servo.max()
+        time.sleep(0.1)
+        toggle_brake = 1
+    elif toggle_brake == 1:
+        brake1Servo.min()
+        brake2Servo.min()
+        time.sleep(0.1)
+        toggle_brake = 0
+    return "Brake"
     
 
 
@@ -201,6 +225,7 @@ def distance_value():
 
         # divide in half since the time of travel is out and back
         dist_cm = (pingTravelTime*34444)/2
+        dist_cm = round(dist_cm, 2)
         # sleep to slow things down
         time.sleep(delayTime)
 
@@ -319,4 +344,3 @@ def dist_value():
 # If this is the main thread, simply start the server
 if __name__ == '__main__':
     start_server()
-    
