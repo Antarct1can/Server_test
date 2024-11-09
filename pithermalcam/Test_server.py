@@ -1,6 +1,7 @@
 from pi_therm_cam import pithermalcam
 import cv2
 import io
+import serial
 from libcamera import controls
 import picamera2
 from picamera2 import Picamera2
@@ -70,10 +71,11 @@ logger = logging.getLogger(__name__)
 outputFrame = None
 RGBFrame = None
 thermcam = None
+ser = None
 thermal_camera = 1
 imx708_camera = 2
 usb_camera = 3
-current_camera = thermal_camera
+current_camera = 1
 dist_cm = 0
 updown_value = 0
 rightleft_value = 0
@@ -81,7 +83,7 @@ toggle_brake = 0
 lock = threading.Lock()
 
 
-camera1 = Picamera2(0)
+camera1 = Picamera2()
 camera1.configure(camera1.create_video_configuration(main={"format": 'XRGB8888', "size": (640, 480)}))
 camera1.set_controls({"AfMode": controls.AfModeEnum.Continuous})
 
@@ -172,7 +174,43 @@ def leftbutton():
     else:
         return "Min yaw"   
     
-    
+@app.route('/wBtn')
+def wbutton():
+    global ser
+    print("meow")
+    ser.write(b"speed up\n")
+    line = ser.readline().decode('utf-8').rstrip()
+    print(line)
+    time.sleep(1)
+    return "Speed up"
+
+@app.route('/sBtn')
+def sbutton():
+    global ser
+    ser.write(b"speed down\n")
+    line = ser.readline().decode('utf-8').rstrip()
+    print(line)
+    time.sleep(1)
+    return "Speed down"
+
+@app.route('/dBtn')
+def dbutton():
+    global ser
+    ser.write(b"speed right\n")
+    line = ser.readline().decode('utf-8').rstrip()
+    print(line)
+    time.sleep(1)
+    return "Wheel right"
+
+@app.route('/aBtn')
+def abutton():
+    global ser
+    ser.write(b"speed left\n")
+    line = ser.readline().decode('utf-8').rstrip()
+    print(line)
+    time.sleep(1)
+    return "Wheel left"
+
 @app.route('/brakeBtn')
 def brakebutton():
     global toggle_brake   
@@ -344,3 +382,6 @@ def dist_value():
 # If this is the main thread, simply start the server
 if __name__ == '__main__':
     start_server()
+    ser = serial.Serial('/dev/ttyACM0', 400000, timeout=1)
+    ser.reset_input_buffer()
+    

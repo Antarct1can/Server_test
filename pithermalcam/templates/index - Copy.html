@@ -284,24 +284,68 @@
           }
     });
 
-    document.getElementById('wBtn').addEventListener('click', function () {
-      // Add functionality for the "W" button
+    document.getElementById('wBtn').addEventListener('click', async function () {
       console.log('W button clicked');
+      const wurl = "/wBtn";
+          try {
+            const response = await fetch(wurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
     });
 
-    document.getElementById('aBtn').addEventListener('click', function () {
-      // Add functionality for the "A" button
+    document.getElementById('aBtn').addEventListener('click', async function () {
       console.log('A button clicked');
+      const aurl = "/aBtn";
+          try {
+            const response = await fetch(aurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
     });
 
-    document.getElementById('sBtn').addEventListener('click', function () {
-      // Add functionality for the "S" button
+    document.getElementById('sBtn').addEventListener('click', async function () {
       console.log('S button clicked');
+      const surl = "/sBtn";
+          try {
+            const response = await fetch(surl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
     });
 
-    document.getElementById('dBtn').addEventListener('click', function () {
-      // Add functionality for the "D" button
+    document.getElementById('dBtn').addEventListener('click', async function () {
       console.log('D button clicked');
+      const durl = "/dBtn";
+          try {
+            const response = await fetch(durl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
     });
     
     document.getElementById('brakeBtn').addEventListener('click', async function () {
@@ -423,31 +467,74 @@
         case 'w':
         case 'W':
           setButtonActive(document.getElementById('wBtn'));
-          // Add functionality for the 'W' key
           console.log('W key pressed');
+          const wurl = "/wBtn";
+          try {
+            const response = await fetch(wurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
           break;
         case 'a':
         case 'A':
           setButtonActive(document.getElementById('aBtn'));
-          // Add functionality for the 'A' key
           console.log('A key pressed');
+          const aurl = "/aBtn";
+          try {
+            const response = await fetch(aurl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
           break;
         case 's':
         case 'S':
           setButtonActive(document.getElementById('sBtn'));
-          // Add functionality for the 'S' key
           console.log('S key pressed');
+          const surl = "/sBtn";
+          try {
+            const response = await fetch(surl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
           break;
         case 'd':
         case 'D':
           setButtonActive(document.getElementById('dBtn'));
-          // Add functionality for the 'D' key
           console.log('D key pressed');
+          const durl = "/dBtn";
+          try {
+            const response = await fetch(durl);
+            if (!response.ok) {
+              throw new Error(`Response status: ${response.status}`);
+            }
+
+            const json = await response.json();
+            console.log(json);
+          } catch (error) {
+            console.error(error.message);
+          }
           break;
         case 'b':
         case 'B':
           setButtonActive(document.getElementById('brakeBtn'));
-          // Add functionality for the 'Brake' key
           console.log('brake key pressed');
           toggleColor();
           const brakeurl = "/brakeBtn";
