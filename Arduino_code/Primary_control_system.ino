@@ -11,11 +11,17 @@ volatile unsigned long deltatimeR = 0;
 volatile unsigned long deltatimeL = 0;
 volatile float freqR = 0;
 volatile float freqL = 0;
+volatile int centered = 0;
+volatile int position = 0;
+volatile int notRight = 0;
 
 int pinR = 5;
 int pinL = 6;
 int pinreadingR = 2;
 int pinreadingL = 3;
+int pinDirection = 12;
+int pinTurn = 13;
+int pinPosition = 11;
 
 void setup() 
 {
@@ -24,8 +30,49 @@ void setup()
   pinMode(pinL,OUTPUT);
   pinMode(pinreadingR,INPUT);
   pinMode(pinreadingL,INPUT);
+  pinMode(pinDirection,OUTPUT);
+  pinMode(pinTurn,OUTPUT);
+  pinMode(pinPosition,INPUT);
+  
   attachInterrupt(digitalPinToInterrupt(pinreadingR), checkspeedR, FALLING);
   attachInterrupt(digitalPinToInterrupt(pinreadingL), checkspeedL, FALLING);
+
+  speed = constrain(speed,0,255);
+  speedR = constrain(speedR,0,255);
+  speedL = constrain(speedL,0,255);
+  readingR = constrain(readingR,0,255);
+  readingL = constrain(readingL,0,255);
+
+  while(centered != 1 || notRight != 1)
+  {
+    position = digitalRead(pinPosition);
+    if(position == LOW)
+    {
+      digitalWrite(pinDirection,HIGH);
+      digitalWrite(pinTurn,LOW);
+      digitalWrite(pinTurn,HIGH);
+      delayMicroseconds(60);
+    }
+    else
+    {
+      centered = 1;
+    }
+  }
+  while(centered != 1)
+  {
+    position = digitalRead(pinPosition);
+    if(position == LOW)
+    {
+      digitalWrite(pinDirection,LOW);
+      digitalWrite(pinTurn,LOW);
+      digitalWrite(pinTurn,HIGH);
+      delayMicroseconds(60);
+    }
+    else
+    {
+      centered = 1;
+    }
+  }
 }
 
 void loop() 
@@ -43,14 +90,6 @@ void loop()
           analogWrite(pinR, speedR);
           analogWrite(pinL, speedL);
         }
-        else
-        {
-          speed = 250;
-          speedR = 250;
-          speedL = 250;
-          analogWrite(pinR, speedR);
-          analogWrite(pinL, speedL);
-        }
       }
     else if (data == "speed down")
       {
@@ -62,26 +101,26 @@ void loop()
           analogWrite(pinR, speedR);
           analogWrite(pinL, speedL);
         }
-        else
-        {
-          speed = 0;
-          speedR = 0;
-          speedL = 0;
-          analogWrite(pinR, speedR);
-          analogWrite(pinL, speedL);
-        }
       }
     else if (data == "turn right")
       {
-
-        Serial.print("You sent me: ");
-        Serial.println(data);
+        for(int i=0;i<500;i++)
+        {
+          digitalWrite(pinDirection,HIGH);
+          digitalWrite(pinTurn,LOW);
+          digitalWrite(pinTurn,HIGH);
+          delayMicroseconds(60);
+        }
       } 
     else if (data == "turn left")
       {
-
-        Serial.print("You sent me: ");
-        Serial.println(data);
+       for(int j=0;j<500;j++)
+        {
+          digitalWrite(pinDirection,LOW);
+          digitalWrite(pinTurn,LOW);
+          digitalWrite(pinTurn,HIGH);
+          delayMicroseconds(60);
+        }
       }
   }
 }
@@ -93,7 +132,12 @@ void checkspeedR()
   prevtimerR=timerR;
   
   freqR = 1.0/deltatimeR;
-  
+  readingR = map(freqR,0,125,0,255);
+  if (readingR != speed)
+  {
+    speedR = readingR + (speed - readingR);
+    analogWrite(pinR, speedR);
+  }
 }
 void checkspeedL()
 {
@@ -102,5 +146,10 @@ void checkspeedL()
   prevtimerL=timerL;
   
   freqL = 1.0/deltatimeL;
-  
+  readingL = map(freqL,0,125,0,255);
+  if (readingL != speed)
+  {
+    speedL = readingL + (speed - readingL);
+    analogWrite(pinL, speedL);
+  }
 }
