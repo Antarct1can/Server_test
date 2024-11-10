@@ -381,7 +381,8 @@ def dist_value():
 
 # If this is the main thread, simply start the server
 if __name__ == '__main__':
-    start_server()
     ser = serial.Serial('/dev/ttyACM0', 400000, timeout=1)
     ser.reset_input_buffer()
+    start_server()
+
     
