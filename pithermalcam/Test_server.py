@@ -177,10 +177,7 @@ def leftbutton():
 @app.route('/wBtn')
 def wbutton():
     global ser
-    print("meow")
     ser.write(b"speed up\n")
-    line = ser.readline().decode('utf-8').rstrip()
-    print(line)
     time.sleep(1)
     return "Speed up"
 
@@ -188,26 +185,20 @@ def wbutton():
 def sbutton():
     global ser
     ser.write(b"speed down\n")
-    line = ser.readline().decode('utf-8').rstrip()
-    print(line)
     time.sleep(1)
     return "Speed down"
 
 @app.route('/dBtn')
 def dbutton():
     global ser
-    ser.write(b"speed right\n")
-    line = ser.readline().decode('utf-8').rstrip()
-    print(line)
+    ser.write(b"turn right\n")
     time.sleep(1)
     return "Wheel right"
 
 @app.route('/aBtn')
 def abutton():
     global ser
-    ser.write(b"speed left\n")
-    line = ser.readline().decode('utf-8').rstrip()
-    print(line)
+    ser.write(b"turn left\n")
     time.sleep(1)
     return "Wheel left"
 

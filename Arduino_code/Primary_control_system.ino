@@ -1,8 +1,8 @@
-volatile int speed = 0;
-volatile int speedR = 0;
-volatile int speedL = 0;
-volatile int readingR = 0;
-volatile int readingL = 0;
+volatile float speed = 0;
+volatile float speedR = 0;
+volatile float speedL = 0;
+volatile float readingR = 0;
+volatile float readingL = 0;
 unsigned long timerR = 0;
 unsigned long timerL = 0;
 unsigned long prevtimerR = 0;
@@ -43,36 +43,36 @@ void setup()
   readingR = constrain(readingR,0,255);
   readingL = constrain(readingL,0,255);
 
-  while(centered != 1 || notRight != 1)
-  {
-    position = digitalRead(pinPosition);
-    if(position == LOW)
-    {
-      digitalWrite(pinDirection,HIGH);
-      digitalWrite(pinTurn,LOW);
-      digitalWrite(pinTurn,HIGH);
-      delayMicroseconds(60);
-    }
-    else
-    {
-      centered = 1;
-    }
-  }
-  while(centered != 1)
-  {
-    position = digitalRead(pinPosition);
-    if(position == LOW)
-    {
-      digitalWrite(pinDirection,LOW);
-      digitalWrite(pinTurn,LOW);
-      digitalWrite(pinTurn,HIGH);
-      delayMicroseconds(60);
-    }
-    else
-    {
-      centered = 1;
-    }
-  }
+ while(centered != 1 || notRight != 1)
+ {
+   position = digitalRead(pinPosition);
+   if(position == LOW)
+   {
+     digitalWrite(pinDirection,HIGH);
+     digitalWrite(pinTurn,LOW);
+     digitalWrite(pinTurn,HIGH);
+     delayMicroseconds(60);
+   }
+   else
+   {
+     centered = 1;
+   }
+ }
+ while(centered != 1)
+ {
+   position = digitalRead(pinPosition);
+   if(position == LOW)
+   {
+     digitalWrite(pinDirection,LOW);
+     digitalWrite(pinTurn,LOW);
+     digitalWrite(pinTurn,HIGH);
+     delayMicroseconds(60);
+   }
+   else
+   {
+     centered = 1;
+   }
+ }
 }
 
 void loop() 
@@ -82,11 +82,11 @@ void loop()
     String data = Serial.readStringUntil('\n');
     if (data == "speed up")
       {
-        if(speed < 250)
+        if(speed < 229.5)
         {
-          speed = speed + 10;
-          speedR = speedR + 10;
-          speedL = speedL + 10;
+          speed = speed + 10.2;
+          speedR = speedR + 10.2;
+          speedL = speedL + 10.2;
           analogWrite(pinR, speedR);
           analogWrite(pinL, speedL);
         }
@@ -95,31 +95,33 @@ void loop()
       {
         if(speed > 0)
         {
-          speed = speed - 10;
-          speedR = speedR - 10;
-          speedL = speedL - 10;
+          speed = speed - 10.2;
+          speedR = speedR - 10.2;
+          speedL = speedL - 10.2;
           analogWrite(pinR, speedR);
           analogWrite(pinL, speedL);
         }
       }
     else if (data == "turn right")
       {
-        for(int i=0;i<500;i++)
+        for(int i=0;i<50;i++)
         {
           digitalWrite(pinDirection,HIGH);
           digitalWrite(pinTurn,LOW);
           digitalWrite(pinTurn,HIGH);
-          delayMicroseconds(60);
+          digitalWrite(pinTurn,LOW);
+          delayMicroseconds(1000060);
         }
       } 
     else if (data == "turn left")
       {
-       for(int j=0;j<500;j++)
+       for(int j=0;j<50;j++)
         {
           digitalWrite(pinDirection,LOW);
           digitalWrite(pinTurn,LOW);
           digitalWrite(pinTurn,HIGH);
-          delayMicroseconds(60);
+          digitalWrite(pinTurn,LOW);
+          delayMicroseconds(1000060);
         }
       }
   }
