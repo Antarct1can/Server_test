@@ -126,10 +126,11 @@ def firebutton():
 def upbutton():
     global updown_value
 
-    if updown_value < 10:
-        upServo.value = updown_value/10
+    if updown_value < 15:
+        upServo.value = updown_value/100
         time.sleep(0.1)
         #print("up")
+        #print(updown_value)
         updown_value = updown_value + 1
         return "Weapon up"
     else:
@@ -140,9 +141,10 @@ def downbutton():
     global updown_value
     
     if updown_value > -10:
-        downServo.value = updown_value/10
+        downServo.value = updown_value/100
         time.sleep(0.1)
         #print("down")
+        #print(updown_value)
         updown_value = updown_value - 1
         return "Weapon down"
     else:
@@ -152,8 +154,8 @@ def downbutton():
 def rightbutton():
     global rightleft_value
     
-    if rightleft_value > -10:
-        rightServo.value = rightleft_value/10
+    if rightleft_value > -100:
+        rightServo.value = rightleft_value/100
         time.sleep(0.1)
         #print("right")
         rightleft_value = rightleft_value - 1
@@ -165,8 +167,8 @@ def rightbutton():
 def leftbutton():    
     global rightleft_value
     
-    if rightleft_value < 10:
-        leftServo.value = rightleft_value/10
+    if rightleft_value < 100:
+        leftServo.value = rightleft_value/100
         time.sleep(0.1)
         #print("left")
         rightleft_value = rightleft_value + 1
@@ -375,5 +377,3 @@ if __name__ == '__main__':
     ser = serial.Serial('/dev/ttyACM0', 400000, timeout=1)
     ser.reset_input_buffer()
     start_server()
-
-    
